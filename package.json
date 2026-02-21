@@ -1,0 +1,50 @@
+{
+  "name": "vto-v4",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm --filter @vto/web dev",
+    "build": "pnpm --filter @vto/web build",
+    "check": "pnpm -r type-check && pnpm -r test",
+    "type-check": "pnpm -r type-check",
+    "test": "pnpm -r test",
+    "lint": "oxlint .",
+    "lint:fix": "oxlint --fix .",
+    "format": "pnpm run format:ox && pnpm run format:astro",
+    "format:check": "pnpm run format:ox:check && pnpm run format:astro:check",
+    "format:ox": "oxfmt .",
+    "format:ox:check": "oxfmt --check .",
+    "format:astro": "prettier --write \"apps/web/src/**/*.astro\"",
+    "format:astro:check": "prettier --check \"apps/web/src/**/*.astro\"",
+    "deps:circular": "madge --circular --extensions ts,tsx --ts-config ./tsconfig.base.json ./apps ./libs",
+    "knip": "knip",
+    "knip:strict": "knip --strict",
+    "pre-commit": "lint-staged --allow-empty"
+  },
+  "devDependencies": {
+    "@total-typescript/ts-reset": "0.6.1",
+    "@vitest/coverage-v8": "4.0.18",
+    "husky": "9.1.7",
+    "knip": "5.84.1",
+    "lint-staged": "16.2.7",
+    "madge": "8.0.0",
+    "npm-run-all2": "8.0.4",
+    "oxfmt": "0.34.0",
+    "oxlint": "1.49.0",
+    "oxlint-tsgolint": "0.14.2",
+    "prettier": "3.8.1",
+    "prettier-plugin-astro": "0.14.1",
+    "typescript": "5.9.3",
+    "vitest": "4.0.18"
+  },
+  "lint-staged": {
+    "*": [
+      "pnpm lint:fix",
+      "pnpm format:ox --no-error-on-unmatched-pattern"
+    ],
+    "*.astro": [
+      "prettier --ignore-unknown --write"
+    ]
+  },
+  "packageManager": "pnpm@10.30.1"
+}

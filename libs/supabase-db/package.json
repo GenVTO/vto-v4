@@ -1,0 +1,18 @@
+{
+  "name": "@vto/supabase-db",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.97.0",
+    "@vto/db": "workspace:*",
+    "@vto/types": "workspace:*"
+  }
+}

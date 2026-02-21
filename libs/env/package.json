@@ -1,0 +1,21 @@
+{
+  "name": "@vto/env",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./core": "./src/core.ts",
+    "./server": "./src/server.ts",
+    "./fashn": "./src/fashn.ts",
+    "./r2": "./src/r2.ts",
+    "./supabase": "./src/supabase.ts"
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "zod": "4.3.6"
+  }
+}

@@ -1,0 +1,154 @@
+---
+import { HeroActions } from '../components/marketing/HeroActions'
+import Layout from '../layouts/Layout.astro'
+---
+
+<Layout
+  title="VTO for Shopify | Convert More, Return Less"
+  description="AI virtual try-on for Shopify. Let shoppers preview products on themselves and reduce return rates with an async, high-quality try-on flow."
+>
+  <main class="mx-auto max-w-6xl px-5 pt-8 pb-24 sm:px-8 lg:px-10">
+    <section class="grid gap-8 lg:grid-cols-[1.25fr_1fr] lg:items-center">
+      <div>
+        <p
+          class="bg-secondary/80 text-secondary-foreground mb-4 inline-flex rounded-full border px-4 py-1 text-xs font-semibold tracking-[0.18em] uppercase"
+        >
+          Shopify App + Modular AI API
+        </p>
+        <h1
+          class="font-display text-4xl leading-tight font-extrabold text-balance sm:text-5xl lg:text-6xl"
+        >
+          Cut return risk before checkout with <span class="text-primary"
+            >real shopper try-ons</span
+          >.
+        </h1>
+        <p class="text-muted-foreground mt-5 max-w-2xl text-lg leading-relaxed">
+          VTO lets your shoppers upload a photo, try products on in seconds, and
+          keep browsing while generation runs in the background. You get higher
+          purchase confidence with less cart friction.
+        </p>
+        <div class="mt-8">
+          <HeroActions />
+        </div>
+        <dl class="mt-8 grid gap-4 sm:grid-cols-3">
+          <div class="bg-card rounded-xl border p-4">
+            <dt class="text-muted-foreground text-xs tracking-wider uppercase">
+              Async first
+            </dt>
+            <dd class="mt-1 text-xl font-bold">40s+ safe flow</dd>
+          </div>
+          <div class="bg-card rounded-xl border p-4">
+            <dt class="text-muted-foreground text-xs tracking-wider uppercase">
+              Model abstraction
+            </dt>
+            <dd class="mt-1 text-xl font-bold">normal / advanced</dd>
+          </div>
+          <div class="bg-card rounded-xl border p-4">
+            <dt class="text-muted-foreground text-xs tracking-wider uppercase">
+              Cost control
+            </dt>
+            <dd class="mt-1 text-xl font-bold">Credit-based usage</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="grid-halo bg-card orb-shadow rounded-3xl border p-6">
+        <h2 class="font-display text-2xl font-bold">What your shopper sees</h2>
+        <ol
+          class="text-muted-foreground mt-4 space-y-4 text-sm leading-relaxed"
+        >
+          <li>
+            <strong class="text-foreground">1.</strong> Upload one personal image.
+          </li>
+          <li>
+            <strong class="text-foreground">2.</strong> Tap try-on on a product page.
+          </li>
+          <li>
+            <strong class="text-foreground">3.</strong> Keep browsing while generation
+            runs.
+          </li>
+          <li>
+            <strong class="text-foreground">4.</strong> Open result and continue to
+            checkout.
+          </li>
+        </ol>
+        <div class="bg-muted mt-6 rounded-2xl p-4">
+          <p class="text-muted-foreground text-xs tracking-[0.16em] uppercase">
+            Built for merchants
+          </p>
+          <p class="mt-2 text-sm">
+            Product-linked try-on history, cache-aware generations, and
+            provider-agnostic architecture so your app can evolve without vendor
+            lock-in.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="mt-20 grid gap-6 lg:grid-cols-3">
+      <article class="bg-card rounded-2xl border p-6">
+        <h3 class="font-display text-xl font-bold">Conversion confidence</h3>
+        <p class="text-muted-foreground mt-3 text-sm leading-relaxed">
+          Shoppers can visualize fit intent and style alignment directly on
+          their own image before adding to cart.
+        </p>
+      </article>
+      <article class="bg-card rounded-2xl border p-6">
+        <h3 class="font-display text-xl font-bold">Lower operating waste</h3>
+        <p class="text-muted-foreground mt-3 text-sm leading-relaxed">
+          Cache re-use and one-credit-per-generation policies are designed to
+          keep provider spend predictable.
+        </p>
+      </article>
+      <article class="bg-card rounded-2xl border p-6">
+        <h3 class="font-display text-xl font-bold">Future-proof stack</h3>
+        <p class="text-muted-foreground mt-3 text-sm leading-relaxed">
+          Provider gateways let you swap AI engines (Fashn, Vertex, Gemini, and
+          others) without rewriting storefront integration.
+        </p>
+      </article>
+    </section>
+
+    <section
+      class="bg-card orb-shadow mt-20 rounded-3xl border p-8"
+      id="pricing"
+    >
+      <h2 class="font-display text-3xl font-bold">Commercial Model</h2>
+      <p class="text-muted-foreground mt-3 max-w-3xl">
+        Start with credit packs for immediate activation. Grow into
+        subscriptions or enterprise terms as usage scales.
+      </p>
+      <div class="mt-6 grid gap-4 md:grid-cols-3">
+        <div class="rounded-xl border p-4">
+          <p class="text-muted-foreground text-xs tracking-[0.16em] uppercase">
+            Starter
+          </p>
+          <p class="font-display mt-2 text-2xl font-bold">On-demand credits</p>
+          <p class="text-muted-foreground mt-2 text-sm">
+            Fast testing and pilot stores.
+          </p>
+        </div>
+        <div class="rounded-xl border p-4">
+          <p class="text-muted-foreground text-xs tracking-[0.16em] uppercase">
+            Growth
+          </p>
+          <p class="font-display mt-2 text-2xl font-bold">
+            Monthly subscription
+          </p>
+          <p class="text-muted-foreground mt-2 text-sm">
+            Predictable budget with usage bands.
+          </p>
+        </div>
+        <div class="rounded-xl border p-4">
+          <p class="text-muted-foreground text-xs tracking-[0.16em] uppercase">
+            Enterprise
+          </p>
+          <p class="font-display mt-2 text-2xl font-bold">Custom terms</p>
+          <p class="text-muted-foreground mt-2 text-sm">
+            Dedicated support and tailored flows.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>

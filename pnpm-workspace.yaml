@@ -1,0 +1,14 @@
+packages:
+  - apps/*
+  - libs/*
+
+hoist: true
+
+ignoredBuiltDependencies:
+  - sharp
+
+onlyBuiltDependencies:
+  - esbuild
+  - workerd
+
+shamefullyHoist: true

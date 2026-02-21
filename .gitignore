@@ -1,0 +1,15 @@
+node_modules
+.pnpm-store
+.DS_Store
+.env
+.env.*
+dist
+coverage
+.astro
+.env*
+!.env.example
+*.tsbuildinfo
+
+!/.agent/
+!/.agents/
+!/.trae/

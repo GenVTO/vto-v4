@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap');
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+:root {
+  --background: hsl(47 38% 97%);
+  --foreground: hsl(188 72% 12%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(188 72% 12%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(188 72% 12%);
+  --primary: hsl(14 90% 56%);
+  --primary-foreground: hsl(0 0% 100%);
+  --secondary: hsl(177 58% 88%);
+  --secondary-foreground: hsl(188 72% 12%);
+  --muted: hsl(190 22% 93%);
+  --muted-foreground: hsl(188 24% 34%);
+  --accent: hsl(170 74% 38%);
+  --accent-foreground: hsl(0 0% 100%);
+  --destructive: hsl(0 72% 45%);
+  --destructive-foreground: hsl(0 0% 100%);
+  --border: hsl(188 20% 84%);
+  --input: hsl(188 20% 84%);
+  --ring: hsl(14 90% 56%);
+  --radius: 0.75rem;
+}
+
+.dark {
+  --background: hsl(192 42% 10%);
+  --foreground: hsl(170 18% 92%);
+  --card: hsl(192 36% 14%);
+  --card-foreground: hsl(170 18% 92%);
+  --popover: hsl(192 36% 14%);
+  --popover-foreground: hsl(170 18% 92%);
+  --primary: hsl(12 88% 61%);
+  --primary-foreground: hsl(0 0% 100%);
+  --secondary: hsl(187 20% 22%);
+  --secondary-foreground: hsl(170 18% 92%);
+  --muted: hsl(188 21% 18%);
+  --muted-foreground: hsl(185 15% 70%);
+  --accent: hsl(170 72% 45%);
+  --accent-foreground: hsl(192 42% 10%);
+  --destructive: hsl(0 75% 52%);
+  --destructive-foreground: hsl(0 0% 100%);
+  --border: hsl(186 14% 28%);
+  --input: hsl(186 14% 28%);
+  --ring: hsl(12 88% 61%);
+}
+
+@theme inline {
+  --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Sora', ui-sans-serif, system-ui, sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+* {
+  border-color: var(--border);
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background:
+    radial-gradient(
+      circle at 10% 15%,
+      color-mix(in hsl, var(--secondary) 68%, transparent),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 90% 20%,
+      color-mix(in hsl, var(--primary) 22%, transparent),
+      transparent 38%
+    ),
+    linear-gradient(180deg, color-mix(in hsl, var(--background) 96%, white), var(--background));
+  color: var(--foreground);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+}
+
+.grid-halo {
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in hsl, var(--border) 70%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in hsl, var(--border) 70%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 44px 44px;
+}
+
+.orb-shadow {
+  box-shadow:
+    0 30px 80px color-mix(in hsl, var(--accent) 20%, transparent),
+    inset 0 0 0 1px color-mix(in hsl, var(--border) 70%, transparent);
+}

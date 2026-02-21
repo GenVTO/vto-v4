@@ -1,0 +1,53 @@
+---
+// oxlint-disable-next-line import/no-unassigned-import
+import '../styles/global.css'
+const { title = 'VTO', description = '' } = Astro.props
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+  </head>
+  <body>
+    <header
+      class="bg-card/75 orb-shadow sticky top-0 z-50 border-b backdrop-blur-sm"
+    >
+      <div
+        class="mx-auto flex max-w-6xl items-center justify-between px-5 py-3 sm:px-8 lg:px-10"
+      >
+        <a href="/" class="flex items-center gap-3">
+          <span
+            class="bg-accent text-accent-foreground font-display inline-flex h-9 w-9 items-center justify-center rounded-xl text-base font-bold"
+            >V</span
+          >
+          <span class="font-display text-base font-semibold"
+            >VTO for Shopify</span
+          >
+        </a>
+        <nav class="flex items-center gap-2">
+          <a
+            class="hover:bg-muted rounded-lg border px-3 py-2 text-sm font-semibold"
+            href="/">Inicio</a
+          >
+          <a
+            class="hover:bg-muted rounded-lg border px-3 py-2 text-sm font-semibold"
+            href="/try-on">API Playground</a
+          >
+        </nav>
+      </div>
+    </header>
+
+    <slot />
+
+    <footer class="mt-16 border-t">
+      <div
+        class="text-muted-foreground mx-auto max-w-6xl px-5 py-10 text-sm sm:px-8 lg:px-10"
+      >
+        <p>© {new Date().getFullYear()} VTO. Todos los derechos reservados.</p>
+      </div>
+    </footer>
+  </body>
+</html>

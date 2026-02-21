@@ -1,0 +1,11 @@
+node_modules
+.pnpm-store
+.astro
+coverage
+dist
+.agent/
+.agents/
+.husky/
+.pnpm-store/
+.trea/
+pnpm-lock.yaml

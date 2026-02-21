@@ -1,0 +1,12 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "ignore": ["oxlint.config.ts"],
+  "workspaces": {
+    "apps/*": {
+      "project": ["src/**/*.{ts,tsx,astro}"]
+    },
+    "libs/*": {
+      "project": ["src/**/*.{ts,tsx}"]
+    }
+  }
+}
