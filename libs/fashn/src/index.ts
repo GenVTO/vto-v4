@@ -1,4 +1,6 @@
-export { FashnTryOnProvider, toFashnModel } from './provider'
+export { FashnTryOnProvider } from './provider'
+export { createFashnClientFromEnv, FashnApiClient } from './client'
 export { MockFashnClient } from './mock'
+export { toFashnModel, toFashnModelName } from './model'
 
-export type { FashnClient } from './contracts'
+export type { FashnClient, FashnClientEnvOptions, FashnClientOptions } from './contracts'

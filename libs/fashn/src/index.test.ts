@@ -1,6 +1,6 @@
 import { toFashnModel } from './index'
 
-describe(toFashnModel, () => {
+describe('toFashnModel', () => {
   it('maps normal to fashn-v1.6', () => {
     expect(toFashnModel('normal')).toBe('fashn-v1.6')
   })

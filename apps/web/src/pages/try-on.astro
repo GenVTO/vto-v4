@@ -1,113 +1,19 @@
 ---
 import Layout from '../layouts/Layout.astro'
+import { TryOnForm } from '@/components/try-on/TryOnForm'
 ---
 
-<Layout title="Try-on API Playground">
-  <main class="mx-auto max-w-3xl px-5 pt-10 pb-20 sm:px-8">
-    <a
-      href="/"
-      class="hover:bg-muted mb-6 inline-flex rounded-lg border px-3 py-2 text-sm font-semibold"
-      >Back to landing</a
-    >
-
-    <section class="bg-card orb-shadow rounded-2xl border p-6">
-      <h1 class="font-display text-3xl font-bold">Try-on playground</h1>
-      <p class="text-muted-foreground mt-2 text-sm">
-        This form sends JSON to <code>/api/v1/try-on</code>.
+<Layout title="Try-on Demo">
+  <main class="mx-auto max-w-2xl px-5 pt-10 pb-20 sm:px-8">
+    <div class="mb-8 text-center">
+      <h1 class="font-display text-3xl font-bold tracking-tight">
+        Virtual Try-On
+      </h1>
+      <p class="text-muted-foreground mt-2">
+        Upload your photo and a product to try it on.
       </p>
-      <p class="text-muted-foreground mt-1 text-xs">
-        Seeded mock credentials: <code>api_key=dev_vto_api_key</code>, <code
-          >shop_domain=demo-shop.myshopify.com</code
-        >.
-      </p>
+    </div>
 
-      <form id="tryon-form" class="mt-6 grid gap-3">
-        <input
-          class="bg-background h-11 rounded-lg border px-3"
-          name="api_key"
-          value="dev_vto_api_key"
-          placeholder="api_key"
-          required
-        />
-        <input
-          class="bg-background h-11 rounded-lg border px-3"
-          name="shop_domain"
-          value="demo-shop.myshopify.com"
-          placeholder="shop_domain"
-          required
-        />
-        <input
-          class="bg-background h-11 rounded-lg border px-3"
-          name="product_id"
-          placeholder="product_id"
-          required
-        />
-        <input
-          class="bg-background h-11 rounded-lg border px-3"
-          name="product_image_url"
-          placeholder="product_image_url"
-          required
-        />
-        <input
-          class="bg-background h-11 rounded-lg border px-3"
-          name="user_image_url"
-          placeholder="user_image_url"
-          required
-        />
-        <input
-          class="bg-background h-11 rounded-lg border px-3"
-          name="visitor_id"
-          value="visitor_12345678"
-          placeholder="visitor_id"
-          required
-        />
-        <input
-          class="bg-background h-11 rounded-lg border px-3"
-          name="idempotency_key"
-          placeholder="idempotency_key (optional)"
-        />
-        <select class="bg-background h-11 rounded-lg border px-3" name="model">
-          <option value="normal">normal</option>
-          <option value="advanced" selected>advanced</option>
-        </select>
-        <button
-          class="bg-primary text-primary-foreground mt-2 h-11 rounded-lg px-4 font-semibold hover:opacity-90"
-          type="submit">Create job</button
-        >
-      </form>
-
-      <pre
-        id="out"
-        class="bg-foreground text-background mt-6 overflow-x-auto rounded-xl p-4 text-xs">No response yet.</pre>
-    </section>
+    <TryOnForm client:load />
   </main>
-
-  <script>
-    const form = document.querySelector('#tryon-form')
-    const out = document.querySelector('#out')
-
-    if (!(form instanceof HTMLFormElement) || !(out instanceof HTMLElement)) {
-      throw new Error('Missing required try-on form elements.')
-    }
-
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault()
-      const fd = new FormData(form)
-      const apiKey = String(fd.get('api_key') || '')
-      fd.delete('api_key')
-
-      const payload = Object.fromEntries(fd.entries())
-      const res = await fetch('/api/v1/try-on', {
-        body: JSON.stringify(payload),
-        headers: {
-          'content-type': 'application/json',
-          'x-api-key': apiKey,
-        },
-        method: 'POST',
-      })
-
-      const data = await res.json()
-      out.textContent = JSON.stringify({ data, status: res.status }, null, 2)
-    })
-  </script>
 </Layout>

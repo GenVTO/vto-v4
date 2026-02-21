@@ -1,10 +1,9 @@
 import type { TryOnGatewayError } from '@vto/try-on'
 import type { CreateTryOnRequest } from '@vto/types'
+import type { HttpStatus } from '@vto/types/http-status'
 import type { APIContext } from 'astro'
 
 import { createTryOnRequestSchema } from '@vto/types/schemas'
-
-import type { HttpStatus } from './http'
 
 import { readApiKey } from './auth'
 import { apiError } from './http'
@@ -32,8 +31,12 @@ export function statusFromGatewayError(error: TryOnGatewayError): HttpStatus {
 }
 
 export async function authenticateRequest(context: APIContext): Promise<Response | TenantAuth> {
+  const requestLogger = runtime.logger.child({
+    path: new URL(context.request.url).pathname,
+  })
   const apiKey = readApiKey(context)
   if (!apiKey) {
+    requestLogger.warn('Authentication failed: missing api key')
     return apiError(context, {
       code: 'UNAUTHORIZED',
       message: 'Missing API key.',
@@ -43,6 +46,7 @@ export async function authenticateRequest(context: APIContext): Promise<Response
 
   const tenant = await runtime.db.validateApiKey(apiKey)
   if (!tenant) {
+    requestLogger.warn('Authentication failed: invalid api key')
     return apiError(context, {
       code: 'UNAUTHORIZED',
       message: 'Invalid API key.',
@@ -50,6 +54,10 @@ export async function authenticateRequest(context: APIContext): Promise<Response
     })
   }
 
+  requestLogger.debug('Authentication succeeded', {
+    shop_domain: tenant.shopDomain,
+    tenant_id: tenant.tenantId,
+  })
   return tenant
 }
 
@@ -71,6 +79,9 @@ function parseMultipartBody(form: FormData): Record<string, unknown> {
 export async function parseCreateTryOnBody(
   context: APIContext,
 ): Promise<CreateTryOnRequest | Response> {
+  const requestLogger = runtime.logger.child({
+    path: new URL(context.request.url).pathname,
+  })
   try {
     const contentType = context.request.headers.get('content-type') ?? ''
     const raw = contentType.includes('multipart/form-data')
@@ -79,6 +90,9 @@ export async function parseCreateTryOnBody(
 
     const parsed = createTryOnRequestSchema.safeParse(raw)
     if (!parsed.success) {
+      requestLogger.warn('Request body validation failed', {
+        issue_count: parsed.error.issues.length,
+      })
       return apiError(context, {
         code: 'INVALID_INPUT',
         details: { issues: parsed.error.issues },
@@ -87,8 +101,14 @@ export async function parseCreateTryOnBody(
       })
     }
 
+    requestLogger.debug('Request body parsed', {
+      content_type: contentType || 'unknown',
+      model: parsed.data.model ?? 'advanced',
+      shop_domain: parsed.data.shop_domain,
+    })
     return parsed.data
   } catch {
+    requestLogger.warn('Request body parse failed: invalid json or multipart')
     return apiError(context, {
       code: 'INVALID_INPUT',
       message: 'Body must be valid JSON or multipart form-data.',

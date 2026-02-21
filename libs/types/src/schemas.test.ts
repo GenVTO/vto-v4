@@ -1,6 +1,6 @@
 import { createTryOnRequestSchema } from './schemas'
 
-describe(createTryOnRequestSchema, () => {
+describe('createTryOnRequestSchema', () => {
   it('accepts a valid URL payload', () => {
     const result = createTryOnRequestSchema.safeParse({
       model: 'advanced',

@@ -8,7 +8,7 @@ import {
   statusFromGatewayError,
 } from '@/lib/api-helpers'
 import { apiError, json, requestId } from '@/lib/http'
-import { runtime } from '@/lib/runtime'
+import { configureRuntimeBindings, runtime } from '@/lib/runtime'
 
 function internalError(context: Parameters<APIRoute>[0]): Response {
   return apiError(context, {
@@ -37,12 +37,28 @@ async function createJobResponse(
 }
 
 export const POST: APIRoute = async (context) => {
+  const bindings = (context.locals as { runtime?: { env?: Record<string, unknown> } }).runtime?.env
+  configureRuntimeBindings(bindings)
+
   const request_id = requestId(context)
+  const requestLogger = runtime.logger.child({
+    path: '/api/v1/try-on',
+    request_id,
+  })
+  requestLogger.info('Try-on create request received')
 
   try {
-    return await createJobResponse(context, request_id)
+    const response = await createJobResponse(context, request_id)
+    requestLogger.info('Try-on create request completed', {
+      status: response.status,
+    })
+    return response
   } catch (error) {
     if (error instanceof TryOnGatewayError) {
+      requestLogger.warn('Try-on gateway error', {
+        code: error.code,
+        message: error.message,
+      })
       return apiError(context, {
         code: error.code,
         details: error.details,
@@ -51,6 +67,7 @@ export const POST: APIRoute = async (context) => {
       })
     }
 
+    requestLogger.error('Unexpected try-on create error')
     return internalError(context)
   }
 }

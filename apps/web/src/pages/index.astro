@@ -1,6 +1,8 @@
 ---
 import { HeroActions } from '../components/marketing/HeroActions'
 import Layout from '../layouts/Layout.astro'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 ---
 
 <Layout
@@ -10,11 +12,12 @@ import Layout from '../layouts/Layout.astro'
   <main class="mx-auto max-w-6xl px-5 pt-8 pb-24 sm:px-8 lg:px-10">
     <section class="grid gap-8 lg:grid-cols-[1.25fr_1fr] lg:items-center">
       <div>
-        <p
-          class="bg-secondary/80 text-secondary-foreground mb-4 inline-flex rounded-full border px-4 py-1 text-xs font-semibold tracking-[0.18em] uppercase"
+        <Badge
+          variant="secondary"
+          className="mb-4 text-xs font-semibold tracking-[0.18em] uppercase"
         >
           Shopify App + Modular AI API
-        </p>
+        </Badge>
         <h1
           class="font-display text-4xl leading-tight font-extrabold text-balance sm:text-5xl lg:text-6xl"
         >
@@ -31,82 +34,107 @@ import Layout from '../layouts/Layout.astro'
           <HeroActions />
         </div>
         <dl class="mt-8 grid gap-4 sm:grid-cols-3">
-          <div class="bg-card rounded-xl border p-4">
-            <dt class="text-muted-foreground text-xs tracking-wider uppercase">
-              Async first
-            </dt>
-            <dd class="mt-1 text-xl font-bold">40s+ safe flow</dd>
-          </div>
-          <div class="bg-card rounded-xl border p-4">
-            <dt class="text-muted-foreground text-xs tracking-wider uppercase">
-              Model abstraction
-            </dt>
-            <dd class="mt-1 text-xl font-bold">normal / advanced</dd>
-          </div>
-          <div class="bg-card rounded-xl border p-4">
-            <dt class="text-muted-foreground text-xs tracking-wider uppercase">
-              Cost control
-            </dt>
-            <dd class="mt-1 text-xl font-bold">Credit-based usage</dd>
-          </div>
+          <Card className="p-4">
+            <CardContent className="p-0">
+              <dt
+                class="text-muted-foreground text-xs tracking-wider uppercase"
+              >
+                Async first
+              </dt>
+              <dd class="mt-1 text-xl font-bold">40s+ safe flow</dd>
+            </CardContent>
+          </Card>
+          <Card className="p-4">
+            <CardContent className="p-0">
+              <dt
+                class="text-muted-foreground text-xs tracking-wider uppercase"
+              >
+                Model abstraction
+              </dt>
+              <dd class="mt-1 text-xl font-bold">normal / advanced</dd>
+            </CardContent>
+          </Card>
+          <Card className="p-4">
+            <CardContent className="p-0">
+              <dt
+                class="text-muted-foreground text-xs tracking-wider uppercase"
+              >
+                Cost control
+              </dt>
+              <dd class="mt-1 text-xl font-bold">Credit-based usage</dd>
+            </CardContent>
+          </Card>
         </dl>
       </div>
 
-      <div class="grid-halo bg-card orb-shadow rounded-3xl border p-6">
-        <h2 class="font-display text-2xl font-bold">What your shopper sees</h2>
-        <ol
-          class="text-muted-foreground mt-4 space-y-4 text-sm leading-relaxed"
-        >
-          <li>
-            <strong class="text-foreground">1.</strong> Upload one personal image.
-          </li>
-          <li>
-            <strong class="text-foreground">2.</strong> Tap try-on on a product page.
-          </li>
-          <li>
-            <strong class="text-foreground">3.</strong> Keep browsing while generation
-            runs.
-          </li>
-          <li>
-            <strong class="text-foreground">4.</strong> Open result and continue to
-            checkout.
-          </li>
-        </ol>
-        <div class="bg-muted mt-6 rounded-2xl p-4">
-          <p class="text-muted-foreground text-xs tracking-[0.16em] uppercase">
-            Built for merchants
-          </p>
-          <p class="mt-2 text-sm">
-            Product-linked try-on history, cache-aware generations, and
-            provider-agnostic architecture so your app can evolve without vendor
-            lock-in.
-          </p>
-        </div>
-      </div>
+      <Card className="grid-halo orb-shadow rounded-3xl p-6">
+        <CardContent className="p-0">
+          <h2 class="font-display text-2xl font-bold">
+            What your shopper sees
+          </h2>
+          <ol
+            class="text-muted-foreground mt-4 space-y-4 text-sm leading-relaxed"
+          >
+            <li>
+              <strong class="text-foreground">1.</strong> Upload one personal image.
+            </li>
+            <li>
+              <strong class="text-foreground">2.</strong> Tap try-on on a product
+              page.
+            </li>
+            <li>
+              <strong class="text-foreground">3.</strong> Keep browsing while generation
+              runs.
+            </li>
+            <li>
+              <strong class="text-foreground">4.</strong> Open result and continue
+              to checkout.
+            </li>
+          </ol>
+          <div class="bg-muted mt-6 rounded-2xl p-4">
+            <p
+              class="text-muted-foreground text-xs tracking-[0.16em] uppercase"
+            >
+              Built for merchants
+            </p>
+            <p class="mt-2 text-sm">
+              Product-linked try-on history, cache-aware generations, and
+              provider-agnostic architecture so your app can evolve without
+              vendor lock-in.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
     </section>
 
     <section class="mt-20 grid gap-6 lg:grid-cols-3">
-      <article class="bg-card rounded-2xl border p-6">
-        <h3 class="font-display text-xl font-bold">Conversion confidence</h3>
-        <p class="text-muted-foreground mt-3 text-sm leading-relaxed">
-          Shoppers can visualize fit intent and style alignment directly on
-          their own image before adding to cart.
-        </p>
-      </article>
-      <article class="bg-card rounded-2xl border p-6">
-        <h3 class="font-display text-xl font-bold">Lower operating waste</h3>
-        <p class="text-muted-foreground mt-3 text-sm leading-relaxed">
-          Cache re-use and one-credit-per-generation policies are designed to
-          keep provider spend predictable.
-        </p>
-      </article>
-      <article class="bg-card rounded-2xl border p-6">
-        <h3 class="font-display text-xl font-bold">Future-proof stack</h3>
-        <p class="text-muted-foreground mt-3 text-sm leading-relaxed">
-          Provider gateways let you swap AI engines (Fashn, Vertex, Gemini, and
-          others) without rewriting storefront integration.
-        </p>
-      </article>
+      <Card className="rounded-2xl p-6">
+        <CardContent className="p-0">
+          <h3 class="font-display text-xl font-bold">Conversion confidence</h3>
+          <p class="text-muted-foreground mt-3 text-sm leading-relaxed">
+            Shoppers can visualize fit intent and style alignment directly on
+            their own image before adding to cart.
+          </p>
+        </CardContent>
+      </Card>
+      <Card className="rounded-2xl p-6">
+        <CardContent className="p-0">
+          <h3 class="font-display text-xl font-bold">Lower operating waste</h3>
+          <p class="text-muted-foreground mt-3 text-sm leading-relaxed">
+            Cache re-use and one-credit-per-generation policies are designed to
+            keep provider spend predictable.
+          </p>
+        </CardContent>
+      </Card>
+      <Card className="rounded-2xl p-6">
+        <CardContent className="p-0">
+          <h3 class="font-display text-xl font-bold">Future-proof stack</h3>
+          <p class="text-muted-foreground mt-3 text-sm leading-relaxed">
+            Provider gateways let you swap AI engines (Fashn, Vertex, Gemini,
+            and others) without rewriting storefront integration.
+          </p>
+        </CardContent>
+      </Card>
     </section>
 
     <section
@@ -119,35 +147,49 @@ import Layout from '../layouts/Layout.astro'
         subscriptions or enterprise terms as usage scales.
       </p>
       <div class="mt-6 grid gap-4 md:grid-cols-3">
-        <div class="rounded-xl border p-4">
-          <p class="text-muted-foreground text-xs tracking-[0.16em] uppercase">
-            Starter
-          </p>
-          <p class="font-display mt-2 text-2xl font-bold">On-demand credits</p>
-          <p class="text-muted-foreground mt-2 text-sm">
-            Fast testing and pilot stores.
-          </p>
-        </div>
-        <div class="rounded-xl border p-4">
-          <p class="text-muted-foreground text-xs tracking-[0.16em] uppercase">
-            Growth
-          </p>
-          <p class="font-display mt-2 text-2xl font-bold">
-            Monthly subscription
-          </p>
-          <p class="text-muted-foreground mt-2 text-sm">
-            Predictable budget with usage bands.
-          </p>
-        </div>
-        <div class="rounded-xl border p-4">
-          <p class="text-muted-foreground text-xs tracking-[0.16em] uppercase">
-            Enterprise
-          </p>
-          <p class="font-display mt-2 text-2xl font-bold">Custom terms</p>
-          <p class="text-muted-foreground mt-2 text-sm">
-            Dedicated support and tailored flows.
-          </p>
-        </div>
+        <Card className="rounded-xl p-4">
+          <CardContent className="p-0">
+            <p
+              class="text-muted-foreground text-xs tracking-[0.16em] uppercase"
+            >
+              Starter
+            </p>
+            <p class="font-display mt-2 text-2xl font-bold">
+              On-demand credits
+            </p>
+            <p class="text-muted-foreground mt-2 text-sm">
+              Fast testing and pilot stores.
+            </p>
+          </CardContent>
+        </Card>
+        <Card className="rounded-xl p-4">
+          <CardContent className="p-0">
+            <p
+              class="text-muted-foreground text-xs tracking-[0.16em] uppercase"
+            >
+              Growth
+            </p>
+            <p class="font-display mt-2 text-2xl font-bold">
+              Monthly subscription
+            </p>
+            <p class="text-muted-foreground mt-2 text-sm">
+              Predictable budget with usage bands.
+            </p>
+          </CardContent>
+        </Card>
+        <Card className="rounded-xl p-4">
+          <CardContent className="p-0">
+            <p
+              class="text-muted-foreground text-xs tracking-[0.16em] uppercase"
+            >
+              Enterprise
+            </p>
+            <p class="font-display mt-2 text-2xl font-bold">Custom terms</p>
+            <p class="text-muted-foreground mt-2 text-sm">
+              Dedicated support and tailored flows.
+            </p>
+          </CardContent>
+        </Card>
       </div>
     </section>
   </main>

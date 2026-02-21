@@ -1,0 +1,49 @@
+name = "vto-web"
+account_id = "ec3f940f656c563a66df8800080ce6fc"
+main = "./dist/_worker.js/index.js"
+compatibility_date = "2026-02-21"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+
+[env.development]
+name = "vto-web-dev"
+workers_dev = true
+
+[env.development.vars]
+NODE_ENV = "development"
+R2_BUCKET_BINDING = "TRYON_ASSETS"
+R2_BUCKET_NAME = "vto-tryon-dev"
+R2_PUBLIC_BASE_URL = "https://dev-img.genvto.com"
+
+[[env.development.r2_buckets]]
+binding = "TRYON_ASSETS"
+bucket_name = "vto-tryon-dev"
+
+# Astro Cloudflare adapter expects this binding for sessions.
+[[env.development.kv_namespaces]]
+binding = "SESSION"
+id = "0b422db1074c417e9e5f3d69ff5e7a00"
+preview_id = "c7ce4fc0208b470aa41450dc8d635776"
+
+[env.production]
+name = "vto-web-prod"
+workers_dev = true
+
+[env.production.vars]
+NODE_ENV = "production"
+R2_BUCKET_BINDING = "TRYON_ASSETS"
+R2_BUCKET_NAME = "vto-tryon-prod"
+R2_PUBLIC_BASE_URL = "https://img.genvto.com"
+
+[[env.production.r2_buckets]]
+binding = "TRYON_ASSETS"
+bucket_name = "vto-tryon-prod"
+
+[[env.production.kv_namespaces]]
+binding = "SESSION"
+id = "6d149034379f429399c58cc2dff40661"
+preview_id = "01f99a8afb554f539a740536b7350f8e"

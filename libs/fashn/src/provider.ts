@@ -4,14 +4,13 @@ import type {
   TryOnProviderSubmitPayload,
   TryOnProviderSubmitResult,
 } from '@vto/try-on/contracts'
-import type { TryOnModel } from '@vto/types'
+
+import { createLogger } from '@vto/logger'
 
 import type { FashnClient } from './contracts'
 
-const modelMap: Record<TryOnModel, 'fashn-v1.6' | 'fashn-max'> = {
-  advanced: 'fashn-max',
-  normal: 'fashn-v1.6',
-}
+import { toFashnModel } from './model'
+const fashnLogger = createLogger({ service: '@vto/fashn-provider' })
 
 export class FashnTryOnProvider implements TryOnProvider {
   private readonly client: FashnClient
@@ -21,7 +20,10 @@ export class FashnTryOnProvider implements TryOnProvider {
   }
 
   async submit(payload: TryOnProviderSubmitPayload): Promise<TryOnProviderSubmitResult> {
-    const model = modelMap[payload.model]
+    const model = toFashnModel(payload.model)
+    fashnLogger.info('Submitting try-on to Fashn', {
+      model,
+    })
     const job = await this.client.run({
       model,
       params: payload.params,
@@ -35,12 +37,10 @@ export class FashnTryOnProvider implements TryOnProvider {
       providerJobId: job.id,
     }
   }
-
   status(providerJobId: string): Promise<TryOnProviderStatusResult> {
+    fashnLogger.debug('Fetching Fashn status', {
+      provider_job_id: providerJobId,
+    })
     return this.client.status(providerJobId)
   }
-}
-
-export function toFashnModel(model: TryOnModel): 'fashn-v1.6' | 'fashn-max' {
-  return modelMap[model]
 }

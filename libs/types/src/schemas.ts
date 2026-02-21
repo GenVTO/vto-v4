@@ -11,7 +11,7 @@ const baseTryOnRequestSchema = z.object({
   metadata: z.record(z.string(), z.unknown()).optional(),
   model: tryOnModelSchema.optional(),
   product_id: z.string().min(1),
-  product_image_url: z.url(),
+  product_image_url: z.string(),
   shop_domain: z.string().min(3),
   visitor_id: z.string().min(8),
 })

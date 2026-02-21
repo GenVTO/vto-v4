@@ -1,10 +1,13 @@
 import type { DbGateway } from '@vto/db/contracts'
 import type { CreateTryOnRequest, TryOnJob, TryOnModel } from '@vto/types'
 
+import { createLogger } from '@vto/logger'
+
 import type { TryOnProvider, TryOnProviderStatusResult } from './contracts'
 
 const HEX_BASE = 16
 const HEX_PAD = 2
+const helpersLogger = createLogger({ service: '@vto/try-on-helpers' })
 
 export async function sha256Hex(input: string): Promise<string> {
   const bytes = new TextEncoder().encode(input)
@@ -39,6 +42,11 @@ export async function updateFromProviderStatus(
   job: TryOnJob,
   providerStatus: TryOnProviderStatusResult,
 ): Promise<void> {
+  helpersLogger.debug('Applying provider status update', {
+    job_id: job.id,
+    provider_job_id: job.provider_job_id,
+    provider_status: providerStatus.status,
+  })
   if (providerStatus.status === 'completed') {
     await db.updateJobStatus({
       jobId: job.id,
@@ -82,6 +90,10 @@ interface PolledJobStatusInput {
 }
 
 async function failMissingProvider(db: DbGateway, job: TryOnJob): Promise<TryOnJob | null> {
+  helpersLogger.warn('Missing provider while polling status', {
+    job_id: job.id,
+    model: job.model,
+  })
   await db.updateJobStatus({
     errorCode: 'PROVIDER_FAILED',
     errorMessage: 'Provider not configured during status polling.',
@@ -96,6 +108,11 @@ export async function polledJobStatus(input: PolledJobStatusInput): Promise<TryO
   const { db, job, modelProviderMap, providers } = input
 
   if (isTerminalStatus(job.status) || !job.provider_job_id) {
+    helpersLogger.debug('Skipping polling for terminal or unsubmitted job', {
+      job_id: job.id,
+      provider_job_id: job.provider_job_id,
+      status: job.status,
+    })
     return job
   }
 
@@ -106,6 +123,10 @@ export async function polledJobStatus(input: PolledJobStatusInput): Promise<TryO
   }
 
   const providerStatus = await provider.status(job.provider_job_id)
+  helpersLogger.debug('Provider status fetched', {
+    job_id: job.id,
+    provider_status: providerStatus.status,
+  })
   await updateFromProviderStatus(db, job, providerStatus)
 
   return db.getJob(job.id)

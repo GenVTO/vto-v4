@@ -1,8 +1,11 @@
 import type { TryOnHistoryQuery, TryOnJob } from '@vto/types'
 
+import { createLogger } from '@vto/logger'
+
 import type { CreditEventInput, CreateJobInput, DbGateway } from './contracts'
 
 const DEFAULT_HISTORY_LIMIT = 10
+const dbLogger = createLogger({ service: '@vto/db-in-memory' })
 
 export interface InMemoryTenant {
   tenantId: string
@@ -31,19 +34,30 @@ export class InMemoryDbGateway implements DbGateway {
       this.tenants.set(tenant.tenantId, tenant)
       this.keyToTenant.set(tenant.apiKey, tenant.tenantId)
     }
+    dbLogger.info('In-memory db initialized', {
+      seeded_tenants: options.seedTenants?.length ?? 0,
+    })
   }
 
   validateApiKey(apiKey: string): Promise<{ tenantId: string; shopDomain: string } | null> {
     const tenantId = this.keyToTenant.get(apiKey)
     if (!tenantId) {
+      dbLogger.warn('API key validation failed: key not found')
       return Promise.resolve(null)
     }
 
     const tenant = this.tenants.get(tenantId)
     if (!tenant) {
+      dbLogger.warn('API key validation failed: tenant missing', {
+        tenant_id: tenantId,
+      })
       return Promise.resolve(null)
     }
 
+    dbLogger.debug('API key validated', {
+      shop_domain: tenant.shopDomain,
+      tenant_id: tenantId,
+    })
     return Promise.resolve({ shopDomain: tenant.shopDomain, tenantId })
   }
 
@@ -55,19 +69,30 @@ export class InMemoryDbGateway implements DbGateway {
   reserveCredit(tenantId: string): Promise<void> {
     const tenant = this.tenants.get(tenantId)
     if (!tenant) {
+      dbLogger.error('Credit reserve failed: tenant not found', { tenant_id: tenantId })
       return Promise.reject(new Error('Tenant not found'))
     }
 
     if (tenant.credits <= 0) {
+      dbLogger.warn('Credit reserve failed: no credits', { tenant_id: tenantId })
       return Promise.reject(new Error('No credits'))
     }
 
     tenant.credits -= 1
+    dbLogger.info('Credit reserved', {
+      remaining_credits: tenant.credits,
+      tenant_id: tenantId,
+    })
     return Promise.resolve()
   }
 
   recordCreditEvent(input: CreditEventInput): Promise<void> {
     this.creditEvents.push(input)
+    dbLogger.debug('Credit event recorded', {
+      amount: input.amountCredits,
+      event_type: input.eventType,
+      tenant_id: input.tenantId,
+    })
     return Promise.resolve()
   }
 
@@ -87,6 +112,14 @@ export class InMemoryDbGateway implements DbGateway {
       )
       .toSorted(byCreatedAtDesc)
 
+    if (cached) {
+      dbLogger.debug('Cache lookup hit', {
+        job_id: cached.id,
+        product_id: input.productId,
+        shop_domain: input.shopDomain,
+      })
+    }
+
     return Promise.resolve(cached ?? null)
   }
 
@@ -101,6 +134,10 @@ export class InMemoryDbGateway implements DbGateway {
 
   saveJobIdempotency(tenantId: string, key: string, jobId: string): Promise<void> {
     this.idempotency.set(`${tenantId}:${key}`, jobId)
+    dbLogger.debug('Idempotency key saved', {
+      job_id: jobId,
+      tenant_id: tenantId,
+    })
     return Promise.resolve()
   }
 
@@ -123,6 +160,12 @@ export class InMemoryDbGateway implements DbGateway {
     }
 
     this.jobs.set(job.id, job)
+    dbLogger.info('Job created', {
+      job_id: job.id,
+      product_id: job.product_id,
+      shop_domain: job.shop_domain,
+      tenant_id: input.tenantId,
+    })
     return Promise.resolve(job)
   }
 
@@ -131,6 +174,7 @@ export class InMemoryDbGateway implements DbGateway {
   ): ReturnType<DbGateway['updateJobStatus']> {
     const current = this.jobs.get(input.jobId)
     if (!current) {
+      dbLogger.error('Job status update failed: job not found', { job_id: input.jobId })
       return Promise.reject(new Error('Job not found'))
     }
 
@@ -144,6 +188,11 @@ export class InMemoryDbGateway implements DbGateway {
       result_url: input.resultUrl ?? current.result_url,
       status: input.status,
       updated_at: new Date().toISOString(),
+    })
+    dbLogger.debug('Job status updated', {
+      job_id: current.id,
+      provider_job_id: providerJobId,
+      status: input.status,
     })
 
     return Promise.resolve()
@@ -163,8 +212,19 @@ export class InMemoryDbGateway implements DbGateway {
       .filter((job) => (query.product_id ? job.product_id === query.product_id : true))
       .toSorted(byCreatedAtDesc)
 
+    const items = filteredJobs.slice(offset, offset + limit)
+    dbLogger.debug('History query resolved', {
+      items: items.length,
+      limit,
+      offset,
+      product_id: query.product_id ?? null,
+      shop_domain: query.shop_domain,
+      total: filteredJobs.length,
+      visitor_id: query.visitor_id,
+    })
+
     return Promise.resolve({
-      items: filteredJobs.slice(offset, offset + limit),
+      items,
       total: filteredJobs.length,
     })
   }

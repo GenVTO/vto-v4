@@ -1,10 +1,8 @@
 import type { ApiErrorCode } from '@vto/types'
+import type { HttpStatus } from '@vto/types/http-status'
 import type { APIContext } from 'astro'
 
-// oxlint-disable-next-line import/no-nodejs-modules
-import { constants } from 'node:http2'
-
-export type HttpStatus = keyof typeof constants
+import { toHttpStatusCode } from '@vto/types/http-status'
 
 export interface ApiErrorInput {
   code: ApiErrorCode
@@ -14,7 +12,7 @@ export interface ApiErrorInput {
 }
 
 export function json(data: unknown, status: HttpStatus = 'HTTP_STATUS_OK'): Response {
-  return Response.json(data, { status: Number(constants[status]) })
+  return Response.json(data, { status: toHttpStatusCode(status) })
 }
 
 export function requestId(context: APIContext): string {

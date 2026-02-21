@@ -51,6 +51,7 @@ export default defineConfig({
         'typescript/consistent-type-imports': 'off',
         'typescript/no-explicit-any': 'off',
         'vitest/prefer-called-once': 'off',
+        'vitest/prefer-describe-function-title': 'off',
       },
     },
     {
@@ -96,7 +97,6 @@ export default defineConfig({
         'import/no-default-export': 'off',
         'import/no-nodejs-modules': 'off',
         'no-explicit-any': 'off',
-        'vitest/prefer-describe-function-title': 'off',
       },
     },
     {
