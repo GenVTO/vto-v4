@@ -230,6 +230,8 @@ async function createProviderJob(input: ProviderSubmitContext): Promise<TryOnPro
         jobId: input.job.id,
         metadata: {
           model,
+          person_image_url: providerPayload.personImageUrl,
+          product_image_url: providerPayload.productImageUrl,
           provider: providerName,
         },
         tenantId: input.context.tenantId,

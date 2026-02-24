@@ -1,3 +1,4 @@
+import { ChevronDown, ChevronRight } from 'lucide-react'
 import { useState } from 'react'
 import { GlassMagnifier } from 'react-image-magnifiers'
 
@@ -75,16 +76,76 @@ function getOriginalImageUrl(events?: TryOnJobEvent[]): string | undefined {
   if (!events) {
     return undefined
   }
-  const startEvent = events.find((e) => e.event_type === 'provider.submit.start')
-  return (startEvent?.metadata as any)?.request?.user_image_url
+  // Check provider.submit.started event which now has image URLs in metadata
+  const startEvent = events.find((e) => e.event_type === 'provider_submit_started')
+  if (startEvent?.metadata?.person_image_url) {
+    return startEvent.metadata.person_image_url as string
+  }
+  // Fallback to older events if any
+  const oldStartEvent = events.find((e) => e.event_type === 'provider.submit.start')
+  return (oldStartEvent?.metadata as any)?.request?.user_image_url
 }
 
 function getProductImageUrl(events?: TryOnJobEvent[]): string | undefined {
   if (!events) {
     return undefined
   }
-  const startEvent = events.find((e) => e.event_type === 'provider.submit.start')
-  return (startEvent?.metadata as any)?.request?.garment_image_url
+  // Check provider.submit.started event which now has image URLs in metadata
+  const startEvent = events.find((e) => e.event_type === 'provider_submit_started')
+  if (startEvent?.metadata?.product_image_url) {
+    return startEvent.metadata.product_image_url as string
+  }
+  // Fallback to older events if any
+  const oldStartEvent = events.find((e) => e.event_type === 'provider.submit.start')
+  return (oldStartEvent?.metadata as any)?.request?.garment_image_url
+}
+
+function EventTimelineItem({ event, duration }: { event: TryOnJobEvent; duration: string | null }) {
+  const [isExpanded, setIsExpanded] = useState(false)
+  const hasMetadata = event.metadata && Object.keys(event.metadata).length > 0
+
+  return (
+    <div className="relative pb-6 pl-6 last:pb-0">
+      <div className="absolute top-1 left-0 h-3 w-3 -translate-x-[5px] rounded-full border-2 border-background bg-primary ring-2 ring-muted" />
+      <div className="flex flex-col gap-1">
+        <div
+          className="-ml-1 flex cursor-pointer items-center justify-between rounded p-1 hover:bg-muted/50"
+          onClick={() => hasMetadata && setIsExpanded(!isExpanded)}
+        >
+          <div className="flex items-center gap-2">
+            {hasMetadata && (
+              <span className="text-muted-foreground">
+                {isExpanded ? (
+                  <ChevronDown className="h-3 w-3" />
+                ) : (
+                  <ChevronRight className="h-3 w-3" />
+                )}
+              </span>
+            )}
+            <span className="text-sm font-semibold">{event.event_type}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            {duration && (
+              <Badge variant="outline" className="font-mono text-[10px]">
+                +{duration}
+              </Badge>
+            )}
+            <span className="w-[70px] text-right text-xs text-muted-foreground">
+              {new Date(event.occurred_at).toLocaleTimeString()}
+            </span>
+          </div>
+        </div>
+
+        {isExpanded && hasMetadata && (
+          <div className="mt-2 ml-4 animate-in rounded-md bg-muted p-2 duration-200 slide-in-from-top-2">
+            <pre className="overflow-x-auto text-[10px] text-muted-foreground">
+              {JSON.stringify(event.metadata, null, 2)}
+            </pre>
+          </div>
+        )}
+      </div>
+    </div>
+  )
 }
 
 export function TryOnHistoryResults({ data }: TryOnHistoryResultsProps) {
@@ -100,94 +161,84 @@ export function TryOnHistoryResults({ data }: TryOnHistoryResultsProps) {
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            Results ({data.items.length}/{data.total}) request_id={data.request_id}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {data.items.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No jobs found for current filters.</p>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Job ID</TableHead>
-                  <TableHead>Model</TableHead>
-                  <TableHead>Product ID</TableHead>
-                  <TableHead>Duration</TableHead>
-                  <TableHead>Result</TableHead>
-                  <TableHead>Created At</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {data.items.map((item) => {
-                  const totalDuration = calculateDuration(item.created_at, item.updated_at)
-                  return (
-                    <TableRow
-                      key={item.id}
-                      className="cursor-pointer hover:bg-muted/50"
-                      data-state={selectedJobId === item.id ? 'selected' : undefined}
-                      onClick={() => setSelectedJobId(selectedJobId === item.id ? null : item.id)}
-                    >
-                      <TableCell>
-                        <Badge variant={getStatusVariant(item.status)}>{item.status}</Badge>
-                      </TableCell>
-                      <TableCell className="font-mono text-xs text-blue-500 underline">
-                        {item.id}
-                      </TableCell>
-                      <TableCell>{item.model}</TableCell>
-                      <TableCell>{item.product_id}</TableCell>
-                      <TableCell className="font-mono">{totalDuration}</TableCell>
-                      <TableCell>
-                        {item.result_url ? (
-                          <a
-                            className="text-blue-500 underline hover:text-blue-700"
-                            href={item.result_url}
-                            rel="noreferrer"
-                            target="_blank"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            View
-                          </a>
-                        ) : (
-                          '-'
-                        )}
-                      </TableCell>
-                      <TableCell className="text-xs text-muted-foreground">
-                        {new Date(item.created_at).toLocaleString()}
-                      </TableCell>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_400px]">
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>
+                Results ({data.items.length}/{data.total}) request_id={data.request_id}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {data.items.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No jobs found for current filters.</p>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Job ID</TableHead>
+                      <TableHead>Model</TableHead>
+                      <TableHead>Product ID</TableHead>
+                      <TableHead>Duration</TableHead>
+                      <TableHead>Result</TableHead>
+                      <TableHead>Created At</TableHead>
                     </TableRow>
-                  )
-                })}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
+                  </TableHeader>
+                  <TableBody>
+                    {data.items.map((item) => {
+                      const totalDuration = calculateDuration(item.created_at, item.updated_at)
+                      return (
+                        <TableRow
+                          key={item.id}
+                          className="cursor-pointer hover:bg-muted/50"
+                          data-state={selectedJobId === item.id ? 'selected' : undefined}
+                          onClick={() =>
+                            setSelectedJobId(selectedJobId === item.id ? null : item.id)
+                          }
+                        >
+                          <TableCell>
+                            <Badge variant={getStatusVariant(item.status)}>{item.status}</Badge>
+                          </TableCell>
+                          <TableCell className="font-mono text-xs text-blue-500 underline">
+                            {item.id}
+                          </TableCell>
+                          <TableCell>{item.model}</TableCell>
+                          <TableCell>{item.product_id}</TableCell>
+                          <TableCell className="font-mono">{totalDuration}</TableCell>
+                          <TableCell>
+                            {item.result_url ? (
+                              <a
+                                className="text-blue-500 underline hover:text-blue-700"
+                                href={item.result_url}
+                                rel="noreferrer"
+                                target="_blank"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                View
+                              </a>
+                            ) : (
+                              '-'
+                            )}
+                          </TableCell>
+                          <TableCell className="text-xs text-muted-foreground">
+                            {new Date(item.created_at).toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                      )
+                    })}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
 
-      {selectedJob && (
-        <Card className="border-l-4 border-l-primary shadow-md">
-          <CardHeader className="bg-muted/30 pb-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="text-xl">Job Details</CardTitle>
-                <p className="mt-1 font-mono text-sm text-muted-foreground">ID: {selectedJob.id}</p>
-              </div>
-              <Badge variant={getStatusVariant(selectedJob.status)} className="px-3 py-1 text-sm">
-                {selectedJob.status}
-              </Badge>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <div className="space-y-8">
-              {/* Image Comparison Section */}
-              <div>
-                <h3 className="mb-4 text-sm font-semibold tracking-wider text-muted-foreground uppercase">
-                  Result Comparison
-                </h3>
+          {selectedJob && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Image Comparison</CardTitle>
+              </CardHeader>
+              <CardContent>
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                   <div className="space-y-2">
                     <p className="text-center text-sm font-medium">User Image</p>
@@ -252,9 +303,31 @@ export function TryOnHistoryResults({ data }: TryOnHistoryResultsProps) {
                     </div>
                   </div>
                 </div>
-              </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
 
-              <div className="grid gap-6 md:grid-cols-2">
+        {selectedJob && (
+          <div className="space-y-6">
+            <Card className="sticky top-4 border-l-4 border-l-primary shadow-md">
+              <CardHeader className="bg-muted/30 pb-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="text-xl">Job Details</CardTitle>
+                    <p className="mt-1 font-mono text-sm text-muted-foreground">
+                      ID: {selectedJob.id}
+                    </p>
+                  </div>
+                  <Badge
+                    variant={getStatusVariant(selectedJob.status)}
+                    className="px-3 py-1 text-sm"
+                  >
+                    {selectedJob.status}
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-6 pt-6">
                 <div>
                   <h3 className="mb-3 text-sm font-semibold tracking-wider text-muted-foreground uppercase">
                     Configuration
@@ -284,7 +357,7 @@ export function TryOnHistoryResults({ data }: TryOnHistoryResultsProps) {
                     Event Timeline
                   </h3>
                   {selectedJob.events && selectedJob.events.length > 0 ? (
-                    <div className="relative ml-2 space-y-6 border-l-2 border-muted pl-4">
+                    <div className="relative ml-2 border-l-2 border-muted">
                       {selectedJob.events.map((event, index) => {
                         const prevEvent = index > 0 ? selectedJob.events![index - 1] : undefined
                         const duration = prevEvent
@@ -292,27 +365,7 @@ export function TryOnHistoryResults({ data }: TryOnHistoryResultsProps) {
                           : calculateDuration(selectedJob.created_at, event.occurred_at)
 
                         return (
-                          <div key={event.id} className="relative">
-                            <div className="absolute top-1 -left-[21px] h-3 w-3 rounded-full border-2 border-background bg-primary ring-2 ring-muted" />
-                            <div className="flex flex-col gap-1">
-                              <div className="flex items-center justify-between">
-                                <span className="text-sm font-semibold">{event.event_type}</span>
-                                <Badge variant="outline" className="font-mono text-[10px]">
-                                  +{duration}
-                                </Badge>
-                              </div>
-                              <span className="text-xs text-muted-foreground">
-                                {new Date(event.occurred_at).toLocaleTimeString()}
-                              </span>
-                              {event.metadata && Object.keys(event.metadata).length > 0 && (
-                                <div className="mt-2 rounded-md bg-muted p-2">
-                                  <pre className="overflow-x-auto text-[10px] text-muted-foreground">
-                                    {JSON.stringify(event.metadata, null, 2)}
-                                  </pre>
-                                </div>
-                              )}
-                            </div>
-                          </div>
+                          <EventTimelineItem key={event.id} event={event} duration={duration} />
                         )
                       })}
                     </div>
@@ -320,11 +373,11 @@ export function TryOnHistoryResults({ data }: TryOnHistoryResultsProps) {
                     <p className="text-sm text-muted-foreground italic">No events recorded.</p>
                   )}
                 </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+              </CardContent>
+            </Card>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
