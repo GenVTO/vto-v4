@@ -1,13 +1,13 @@
+import React from 'react'
+
 import { Button } from '@/components/ui/button'
 
 export function HeroActions() {
   return (
-    <div className="flex gap-2">
-      <Button asChild>
-        <a href="/admin/try-on">Try Demo</a>
-      </Button>
-      <Button asChild variant="secondary">
-        <a href="https://github.com/vto-ai/vto">View Source</a>
+    <div className="flex flex-col gap-4 sm:flex-row">
+      <Button size="lg">Get Started</Button>
+      <Button variant="outline" size="lg">
+        Learn More
       </Button>
     </div>
   )
