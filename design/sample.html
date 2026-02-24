@@ -1,0 +1,883 @@
+<!doctype html>
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>GenVTO - Probador Virtual con IA para Shopify</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&amp;display=swap"
+      rel="stylesheet"
+    />
+    <!-- Material Symbols -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Theme Configuration -->
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: '#4725f4',
+              'primary-dark': '#361bb8',
+              'background-light': '#f6f5f8',
+              'background-dark': '#131022',
+              'surface-light': '#ffffff',
+              'surface-dark': '#1e1a33',
+            },
+            fontFamily: {
+              display: ['Inter', 'sans-serif'],
+              sans: ['Inter', 'sans-serif'],
+            },
+            borderRadius: {
+              DEFAULT: '0.5rem',
+              lg: '0.75rem',
+              xl: '1rem',
+              '2xl': '1.5rem',
+            },
+            boxShadow: {
+              soft: '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+              glow: '0 0 15px rgba(71, 37, 244, 0.3)',
+            },
+          },
+        },
+      }
+    </script>
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        scroll-behavior: smooth;
+      }
+      .text-gradient {
+        background: linear-gradient(135deg, #100d1c 0%, #4725f4 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .bg-gradient-primary {
+        background: linear-gradient(135deg, #4725f4 0%, #7c3aed 100%);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light overflow-x-hidden text-slate-900 antialiased selection:bg-primary selection:text-white"
+  >
+    <!-- Header / Sticky Navigation -->
+    <header class="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md">
+      <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center gap-2">
+          <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white">
+            <span class="material-symbols-outlined text-[20px]">view_in_ar</span>
+          </div>
+          <span class="text-xl font-bold tracking-tight text-slate-900">GenVTO</span>
+        </div>
+        <nav class="hidden items-center gap-8 md:flex">
+          <a
+            class="text-sm font-medium text-slate-600 transition-colors hover:text-primary"
+            href="#como-funciona"
+            >Cómo funciona</a
+          >
+          <a
+            class="text-sm font-medium text-slate-600 transition-colors hover:text-primary"
+            href="#beneficios"
+            >Beneficios</a
+          >
+          <a
+            class="text-sm font-medium text-slate-600 transition-colors hover:text-primary"
+            href="#precios"
+            >Precios</a
+          >
+          <a
+            class="text-sm font-medium text-slate-600 transition-colors hover:text-primary"
+            href="#blog"
+            >Blog</a
+          >
+        </nav>
+        <div class="flex items-center gap-4">
+          <a
+            class="hover:bg-primary-dark hover:shadow-glow hidden items-center justify-center rounded-lg bg-primary px-5 py-2 text-sm font-bold text-white transition-all focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:outline-none sm:inline-flex"
+            href="#"
+          >
+            Instalar en Shopify
+          </a>
+          <button class="p-2 text-slate-600 hover:text-primary md:hidden">
+            <span class="material-symbols-outlined">menu</span>
+          </button>
+        </div>
+      </div>
+    </header>
+    <main>
+      <!-- Hero Section -->
+      <section class="relative overflow-hidden pt-12 pb-20 lg:pt-24 lg:pb-32">
+        <!-- Background Decoration -->
+        <div class="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-primary/10 blur-3xl"></div>
+        <div
+          class="absolute top-1/2 -left-24 h-64 w-64 rounded-full bg-purple-500/10 blur-3xl"
+        ></div>
+        <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="grid items-center gap-12 lg:grid-cols-2 lg:gap-8">
+            <div class="flex flex-col gap-6">
+              <div
+                class="inline-flex w-fit items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-semibold text-primary"
+              >
+                <span class="relative flex h-2 w-2">
+                  <span
+                    class="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"
+                  ></span>
+                  <span class="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
+                </span>
+                Nueva integración V2.0 disponible
+              </div>
+              <h1
+                class="text-4xl leading-tight font-black tracking-tight text-slate-900 sm:text-5xl lg:text-6xl"
+              >
+                Incrementa ventas y <span class="text-primary">reduce devoluciones</span> con IA
+              </h1>
+              <p class="max-w-lg text-lg leading-relaxed text-slate-600">
+                Permite a tus clientes subir fotos de cuerpo entero y probarse la ropa virtualmente.
+                Aumenta la confianza de compra y reduce las devoluciones drásticamente en tu tienda
+                Shopify.
+              </p>
+              <div class="mt-2 flex flex-wrap gap-4">
+                <a
+                  class="hover:bg-primary-dark inline-flex h-12 items-center justify-center rounded-lg bg-primary px-6 text-base font-bold text-white transition-all hover:shadow-lg focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:outline-none"
+                  href="#"
+                >
+                  <span class="material-symbols-outlined mr-2 text-[20px]">shopping_bag</span>
+                  Instalar en Shopify
+                </a>
+                <a
+                  class="inline-flex h-12 items-center justify-center rounded-lg border border-slate-200 bg-white px-6 text-base font-bold text-slate-700 transition-all hover:border-slate-300 hover:bg-slate-50 focus:ring-2 focus:ring-slate-200 focus:ring-offset-2 focus:outline-none"
+                  href="#"
+                >
+                  <span class="material-symbols-outlined mr-2 text-[20px]">play_circle</span>
+                  Ver demo
+                </a>
+              </div>
+              <!-- Trust Metrics -->
+              <div class="mt-4 grid grid-cols-3 gap-4 border-t border-slate-200 pt-8">
+                <div>
+                  <p class="text-2xl font-bold text-slate-900">+40%</p>
+                  <p class="text-sm font-medium text-slate-500">Conversión</p>
+                </div>
+                <div>
+                  <p class="text-2xl font-bold text-slate-900">-30%</p>
+                  <p class="text-sm font-medium text-slate-500">Devoluciones</p>
+                </div>
+                <div>
+                  <div class="flex items-center text-yellow-500">
+                    <span class="material-symbols-outlined fill-current text-[20px]">star</span>
+                    <span class="material-symbols-outlined fill-current text-[20px]">star</span>
+                    <span class="material-symbols-outlined fill-current text-[20px]">star</span>
+                    <span class="material-symbols-outlined fill-current text-[20px]">star</span>
+                    <span class="material-symbols-outlined fill-current text-[20px]">star</span>
+                  </div>
+                  <p class="text-sm font-medium text-slate-500">5.0 en Shopify</p>
+                </div>
+              </div>
+            </div>
+            <!-- Hero Image / Mockup -->
+            <div class="relative flex w-full justify-center lg:h-auto lg:justify-end">
+              <div
+                class="relative aspect-[4/5] w-full max-w-[500px] overflow-hidden rounded-2xl border-4 border-white bg-white shadow-2xl"
+              >
+                <img
+                  alt="Fashion model in studio"
+                  class="h-full w-full object-cover opacity-90"
+                  data-alt="Model posing in fashion outfit"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfF2VF8UeR6Rp1xW2EU2-oJNchqxzHycnmtyi4-vDXeoFBPknr8dstIDAfGzpAnM31kdfdHwjSR-dtGfGNxxTYi3DsXyMivdzozrbSpYBTu33fln8c2fICGD4gVQti6BX4chjg11h9ZaPYqfBW_FypmGhdWdEfmpZdpL-lzR8lMg6JIcrIpFHzOvWurkMyMCQld6rYZ5ouP8o2KCqhfEqz5ONo22ifjV1LhWXOQosGYkRrJX3ZK8N_ohFr5d_siQ4QSk1Yublm50IZ"
+                />
+                <!-- UI Overlay Mockup -->
+                <div class="absolute inset-0 flex items-end justify-center bg-black/10 pb-8">
+                  <div
+                    class="w-[90%] rounded-xl border border-white/50 bg-white/95 p-4 shadow-lg backdrop-blur-sm"
+                  >
+                    <div class="mb-3 flex items-center gap-3">
+                      <div
+                        class="h-10 w-10 overflow-hidden rounded-full border-2 border-primary bg-slate-200"
+                      >
+                        <img
+                          alt="User avatar"
+                          class="h-full w-full object-cover"
+                          data-alt="Small avatar of a user face"
+                          src="https://lh3.googleusercontent.com/aida-public/AB6AXuBch28gm9jIvyDUKSzbFvlSyc_4mz78QDKbooyYUBCN_lLMT0jB5DYjUBi_ukJlw5ALaqFHwYnTc6vsgT6LCiH4XgNL6c9SLPp4-XU-JN15P9ecDBiwcR2qAvsSSV3Ogi3X9tOPGYx5FWPYrhCpcE1Ezl1R2oQI7462v08jiIhrQS3biT_tO7gkPrYy2joDJu_gMtIvRGKNPaXYz0slIYVEwSxq4eqhI0TaFKmyNhfoxeR-I_MXsnoGsAHBPO5vRyghy89Zc1TO4h4Y"
+                        />
+                      </div>
+                      <div>
+                        <p class="text-xs font-bold text-slate-900">Probando Virtualmente</p>
+                        <p class="text-[10px] text-slate-500">Generado por IA en 2.4s</p>
+                      </div>
+                    </div>
+                    <button
+                      class="shadow-glow w-full rounded-lg bg-primary py-2 text-xs font-bold text-white"
+                    >
+                      Añadir al carrito
+                    </button>
+                  </div>
+                </div>
+                <!-- Floating Badge -->
+                <div
+                  class="absolute top-6 right-6 animate-bounce rounded-lg bg-white p-2 shadow-lg"
+                >
+                  <span class="material-symbols-outlined text-[24px] text-primary"
+                    >check_circle</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Logo Wall -->
+      <section class="border-y border-slate-100 bg-slate-50 py-10">
+        <div class="mx-auto max-w-7xl px-4 text-center">
+          <p class="mb-6 text-sm font-semibold tracking-wider text-slate-400 uppercase">
+            Marcas que confían en GenVTO
+          </p>
+          <div
+            class="flex flex-wrap justify-center gap-8 opacity-60 grayscale transition-all duration-500 hover:opacity-100 hover:grayscale-0 md:gap-16"
+          >
+            <!-- Brand Placeholders using text for simplicity but styled like logos -->
+            <h3 class="font-serif text-xl font-bold text-slate-800 italic">VOGUE</h3>
+            <h3 class="text-xl font-black tracking-tighter text-slate-800">ZARA</h3>
+            <h3 class="text-xl font-medium tracking-widest text-slate-800">MANGO</h3>
+            <h3 class="text-xl font-bold text-slate-800">H&amp;M</h3>
+            <h3 class="font-serif text-xl font-bold text-slate-800">ASOS</h3>
+          </div>
+        </div>
+      </section>
+      <!-- How it Works -->
+      <section class="bg-white py-20 lg:py-32" id="como-funciona">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="mx-auto mb-16 max-w-3xl text-center">
+            <h2 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+              Pruébate ropa en 3 simples pasos
+            </h2>
+            <p class="mt-4 text-lg text-slate-600">
+              La experiencia de usuario es fluida, sin complicaciones técnicas y diseñada para
+              convertir visitantes en compradores leales.
+            </p>
+          </div>
+          <div class="relative grid grid-cols-1 gap-8 md:grid-cols-3">
+            <!-- Connecting Line (Desktop) -->
+            <div
+              class="absolute top-12 right-[16%] left-[16%] -z-10 hidden h-0.5 bg-slate-100 md:block"
+            ></div>
+            <!-- Step 1 -->
+            <div class="group flex flex-col items-center text-center">
+              <div
+                class="shadow-soft group-hover:shadow-glow mb-6 flex h-24 w-24 items-center justify-center rounded-2xl border border-slate-100 bg-slate-50 bg-white transition-transform duration-300 group-hover:scale-110 group-hover:border-primary/30"
+              >
+                <span class="material-symbols-outlined text-4xl text-primary">add_a_photo</span>
+              </div>
+              <h3 class="mb-2 text-xl font-bold text-slate-900">1. Sube tu foto</h3>
+              <p class="px-4 leading-relaxed text-slate-500">
+                El cliente sube una imagen clara de cuerpo entero desde su móvil o escritorio.
+              </p>
+            </div>
+            <!-- Step 2 -->
+            <div class="group flex flex-col items-center text-center">
+              <div
+                class="shadow-soft group-hover:shadow-glow mb-6 flex h-24 w-24 items-center justify-center rounded-2xl border border-slate-100 bg-slate-50 bg-white transition-transform duration-300 group-hover:scale-110 group-hover:border-primary/30"
+              >
+                <span class="material-symbols-outlined text-4xl text-primary">checkroom</span>
+              </div>
+              <h3 class="mb-2 text-xl font-bold text-slate-900">2. Elige la prenda</h3>
+              <p class="px-4 leading-relaxed text-slate-500">
+                Navega por tu catálogo y selecciona el botón 'Probar Virtualmente' en cualquier
+                producto.
+              </p>
+            </div>
+            <!-- Step 3 -->
+            <div class="group flex flex-col items-center text-center">
+              <div
+                class="shadow-soft group-hover:shadow-glow mb-6 flex h-24 w-24 items-center justify-center rounded-2xl border border-slate-100 bg-slate-50 bg-white transition-transform duration-300 group-hover:scale-110 group-hover:border-primary/30"
+              >
+                <span class="material-symbols-outlined text-4xl text-primary">check_circle</span>
+              </div>
+              <h3 class="mb-2 text-xl font-bold text-slate-900">3. Mira cómo te queda</h3>
+              <p class="px-4 leading-relaxed text-slate-500">
+                Nuestra IA genera una vista previa ultra-realista de la prenda sobre su cuerpo en
+                segundos.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Benefits Grid -->
+      <section class="bg-background-light py-20" id="beneficios">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
+            <div>
+              <h2 class="mb-6 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+                Todo lo que necesitas para escalar tu e-commerce de moda
+              </h2>
+              <p class="mb-8 text-lg text-slate-600">
+                GenVTO no es solo una herramienta visual, es una plataforma de conversión diseñada
+                para eliminar la fricción en la compra de ropa online.
+              </p>
+              <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                <div
+                  class="rounded-xl border border-slate-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+                >
+                  <span class="material-symbols-outlined mb-4 text-3xl text-primary"
+                    >trending_up</span
+                  >
+                  <h4 class="mb-2 font-bold text-slate-900">Mayor Conversión</h4>
+                  <p class="text-sm text-slate-500">
+                    Los usuarios que usan el probador tienen 3x más probabilidad de comprar.
+                  </p>
+                </div>
+                <div
+                  class="rounded-xl border border-slate-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+                >
+                  <span class="material-symbols-outlined mb-4 text-3xl text-primary">undo</span>
+                  <h4 class="mb-2 font-bold text-slate-900">Menos Devoluciones</h4>
+                  <p class="text-sm text-slate-500">
+                    Reduce drásticamente el "bracketing" (comprar varias tallas para devolver).
+                  </p>
+                </div>
+                <div
+                  class="rounded-xl border border-slate-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+                >
+                  <span class="material-symbols-outlined mb-4 text-3xl text-primary"
+                    >extension</span
+                  >
+                  <h4 class="mb-2 font-bold text-slate-900">Integración No-Code</h4>
+                  <p class="text-sm text-slate-500">
+                    Se instala en tu tema de Shopify con un clic. Sin desarrolladores.
+                  </p>
+                </div>
+                <div
+                  class="rounded-xl border border-slate-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+                >
+                  <span class="material-symbols-outlined mb-4 text-3xl text-primary"
+                    >monitoring</span
+                  >
+                  <h4 class="mb-2 font-bold text-slate-900">Analíticas Reales</h4>
+                  <p class="text-sm text-slate-500">
+                    Panel de control con datos sobre qué prendas se prueban más.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <!-- Dashboard Preview -->
+            <div class="relative mt-8 lg:mt-0">
+              <div
+                class="absolute inset-0 translate-x-12 translate-y-12 transform rounded-full bg-primary/20 blur-3xl"
+              ></div>
+              <div
+                class="relative overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl"
+              >
+                <!-- Fake Dashboard Header -->
+                <div
+                  class="flex items-center gap-2 border-b border-slate-100 bg-slate-50 px-4 py-3"
+                >
+                  <div class="h-3 w-3 rounded-full bg-red-400"></div>
+                  <div class="h-3 w-3 rounded-full bg-yellow-400"></div>
+                  <div class="h-3 w-3 rounded-full bg-green-400"></div>
+                  <div class="ml-4 h-2 w-32 rounded-full bg-slate-200"></div>
+                </div>
+                <!-- Fake Dashboard Content -->
+                <div class="p-6">
+                  <div class="mb-8 flex items-center justify-between">
+                    <h3 class="text-lg font-bold text-slate-800">Rendimiento General</h3>
+                    <span
+                      class="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700"
+                      >+12.5% vs mes anterior</span
+                    >
+                  </div>
+                  <div class="mb-8 grid grid-cols-3 gap-4">
+                    <div class="rounded-lg bg-slate-50 p-4">
+                      <p class="mb-1 text-xs text-slate-500">Sesiones de Prueba</p>
+                      <p class="text-2xl font-bold text-slate-900">14,205</p>
+                    </div>
+                    <div class="rounded-lg bg-slate-50 p-4">
+                      <p class="mb-1 text-xs text-slate-500">Add to Cart</p>
+                      <p class="text-2xl font-bold text-slate-900">3,890</p>
+                    </div>
+                    <div class="rounded-lg bg-slate-50 p-4">
+                      <p class="mb-1 text-xs text-slate-500">Ventas Atribuidas</p>
+                      <p class="text-2xl font-bold text-slate-900">$45.2k</p>
+                    </div>
+                  </div>
+                  <div
+                    class="flex h-32 w-full items-end justify-between gap-1 rounded-lg bg-slate-50 px-2 pb-2"
+                  >
+                    <!-- Simple bar chart -->
+                    <div class="h-[40%] w-full rounded-t bg-primary/20"></div>
+                    <div class="h-[60%] w-full rounded-t bg-primary/30"></div>
+                    <div class="h-[30%] w-full rounded-t bg-primary/40"></div>
+                    <div class="h-[80%] w-full rounded-t bg-primary/50"></div>
+                    <div class="h-[55%] w-full rounded-t bg-primary/60"></div>
+                    <div class="h-[90%] w-full rounded-t bg-primary/80"></div>
+                    <div class="h-[75%] w-full rounded-t bg-primary"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Pricing Section -->
+      <section class="bg-white py-20 lg:py-32" id="precios">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="mb-16 text-center">
+            <h2 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+              Planes simples y transparentes
+            </h2>
+            <p class="mt-4 text-lg text-slate-600">
+              Comienza gratis y escala a medida que crecen tus ventas.
+            </p>
+          </div>
+          <div class="mx-auto grid max-w-6xl grid-cols-1 gap-8 md:grid-cols-3">
+            <!-- Free Plan -->
+            <div class="flex flex-col rounded-2xl border border-slate-200 bg-white p-8">
+              <h3 class="text-lg font-semibold text-slate-900">Starter</h3>
+              <p class="mt-4 flex items-baseline text-slate-900">
+                <span class="text-4xl font-bold tracking-tight">$0</span>
+                <span class="ml-1 text-sm font-semibold text-slate-500">/mes</span>
+              </p>
+              <p class="mt-2 text-sm text-slate-500">Perfecto para tiendas pequeñas.</p>
+              <ul class="mt-8 flex-1 space-y-4">
+                <li class="flex items-center text-sm text-slate-600">
+                  <span class="material-symbols-outlined mr-2 text-[20px] text-green-500"
+                    >check</span
+                  >
+                  50 pruebas virtuales / mes
+                </li>
+                <li class="flex items-center text-sm text-slate-600">
+                  <span class="material-symbols-outlined mr-2 text-[20px] text-green-500"
+                    >check</span
+                  >
+                  Integración básica
+                </li>
+                <li class="flex items-center text-sm text-slate-600">
+                  <span class="material-symbols-outlined mr-2 text-[20px] text-green-500"
+                    >check</span
+                  >
+                  Soporte por email
+                </li>
+              </ul>
+              <a
+                class="mt-8 block w-full rounded-lg border border-primary bg-transparent px-4 py-2 text-center text-sm font-bold text-primary transition-colors hover:bg-primary/5"
+                href="#"
+                >Empezar Gratis</a
+              >
+            </div>
+            <!-- Ecommerce Plan (Highlighted) -->
+            <div
+              class="relative z-10 flex scale-105 transform flex-col rounded-2xl border-2 border-primary bg-white p-8 shadow-xl"
+            >
+              <div
+                class="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-xs font-bold tracking-wider text-white uppercase"
+              >
+                Más Popular
+              </div>
+              <h3 class="text-lg font-semibold text-primary">Ecommerce</h3>
+              <p class="mt-4 flex items-baseline text-slate-900">
+                <span class="text-4xl font-bold tracking-tight">$49</span>
+                <span class="ml-1 text-sm font-semibold text-slate-500">/mes</span>
+              </p>
+              <p class="mt-2 text-sm text-slate-500">Para marcas en crecimiento.</p>
+              <ul class="mt-8 flex-1 space-y-4">
+                <li class="flex items-center text-sm font-medium text-slate-900">
+                  <span class="material-symbols-outlined mr-2 text-[20px] text-primary">check</span>
+                  2,000 pruebas virtuales / mes
+                </li>
+                <li class="flex items-center text-sm font-medium text-slate-900">
+                  <span class="material-symbols-outlined mr-2 text-[20px] text-primary">check</span>
+                  Personalización de marca (White label)
+                </li>
+                <li class="flex items-center text-sm font-medium text-slate-900">
+                  <span class="material-symbols-outlined mr-2 text-[20px] text-primary">check</span>
+                  Analíticas avanzadas
+                </li>
+                <li class="flex items-center text-sm font-medium text-slate-900">
+                  <span class="material-symbols-outlined mr-2 text-[20px] text-primary">check</span>
+                  Soporte prioritario 24/7
+                </li>
+              </ul>
+              <a
+                class="shadow-glow hover:bg-primary-dark mt-8 block w-full rounded-lg bg-primary px-4 py-2 text-center text-sm font-bold text-white transition-colors"
+                href="#"
+                >Prueba Gratuita de 14 días</a
+              >
+            </div>
+            <!-- Enterprise Plan -->
+            <div class="flex flex-col rounded-2xl border border-slate-200 bg-white p-8">
+              <h3 class="text-lg font-semibold text-slate-900">Enterprise</h3>
+              <p class="mt-4 flex items-baseline text-slate-900">
+                <span class="text-4xl font-bold tracking-tight">Custom</span>
+              </p>
+              <p class="mt-2 text-sm text-slate-500">Para grandes retailers.</p>
+              <ul class="mt-8 flex-1 space-y-4">
+                <li class="flex items-center text-sm text-slate-600">
+                  <span class="material-symbols-outlined mr-2 text-[20px] text-green-500"
+                    >check</span
+                  >
+                  Pruebas ilimitadas
+                </li>
+                <li class="flex items-center text-sm text-slate-600">
+                  <span class="material-symbols-outlined mr-2 text-[20px] text-green-500"
+                    >check</span
+                  >
+                  API Access
+                </li>
+                <li class="flex items-center text-sm text-slate-600">
+                  <span class="material-symbols-outlined mr-2 text-[20px] text-green-500"
+                    >check</span
+                  >
+                  Manager de cuenta dedicado
+                </li>
+                <li class="flex items-center text-sm text-slate-600">
+                  <span class="material-symbols-outlined mr-2 text-[20px] text-green-500"
+                    >check</span
+                  >
+                  SLA Garantizado
+                </li>
+              </ul>
+              <a
+                class="mt-8 block w-full rounded-lg border border-slate-200 bg-white px-4 py-2 text-center text-sm font-bold text-slate-700 transition-colors hover:bg-slate-50"
+                href="#"
+                >Contactar Ventas</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Testimonials -->
+      <section class="border-y border-slate-200 bg-slate-50 py-20">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 class="mb-12 text-center text-3xl font-bold tracking-tight text-slate-900">
+            Lo que dicen nuestros clientes
+          </h2>
+          <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <!-- Testimonial 1 -->
+            <div class="rounded-2xl border border-slate-100 bg-white p-8 shadow-sm">
+              <div class="mb-4 flex items-center text-yellow-400">
+                <span class="material-symbols-outlined fill-current text-[20px]">star</span>
+                <span class="material-symbols-outlined fill-current text-[20px]">star</span>
+                <span class="material-symbols-outlined fill-current text-[20px]">star</span>
+                <span class="material-symbols-outlined fill-current text-[20px]">star</span>
+                <span class="material-symbols-outlined fill-current text-[20px]">star</span>
+              </div>
+              <p class="mb-6 text-slate-600">
+                "Desde que instalamos GenVTO, hemos notado una reducción del 25% en las devoluciones
+                por problemas de talla. Es increíble."
+              </p>
+              <div class="flex items-center gap-4">
+                <img
+                  alt="Portrait of business woman"
+                  class="h-12 w-12 rounded-full object-cover"
+                  data-alt="Portrait of a female CEO"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMIDAE2O0LsyCb08sNQcBZg74tORFpyB9a9ViXWzlzHhmPV4K7nFUMxa0UviQIQrc_52fcOnkfGPP0P_rax3swfUJ9-LlNrBo2n2GtpR7GYKkLrKLv2sbSxcXe46J6HQr5X13Nvyats95kd0f1BGXcNeUnBpk5aebVogz_m_gc6V0L6VWrXzY9aaTved4N7lwUb0Zl6bnKK2nLCg2oppBkYj6xntzlQMEottPz-3nDI8sxAF_bfHQEsR7vob4UoBQ3O4ozuYdmeK2N"
+                />
+                <div>
+                  <p class="font-bold text-slate-900">Sofia Martinez</p>
+                  <p class="text-xs text-slate-500">CEO, ModaUrbana</p>
+                </div>
+              </div>
+            </div>
+            <!-- Testimonial 2 -->
+            <div class="rounded-2xl border border-slate-100 bg-white p-8 shadow-sm">
+              <div class="mb-4 flex items-center text-yellow-400">
+                <span class="material-symbols-outlined fill-current text-[20px]">star</span>
+                <span class="material-symbols-outlined fill-current text-[20px]">star</span>
+                <span class="material-symbols-outlined fill-current text-[20px]">star</span>
+                <span class="material-symbols-outlined fill-current text-[20px]">star</span>
+                <span class="material-symbols-outlined fill-current text-[20px]">star</span>
+              </div>
+              <p class="mb-6 text-slate-600">
+                "La integración fue super sencilla. En 5 minutos ya estaba funcionando en mi tienda
+                Shopify. A mis clientes les encanta."
+              </p>
+              <div class="flex items-center gap-4">
+                <img
+                  alt="Portrait of business man"
+                  class="h-12 w-12 rounded-full object-cover"
+                  data-alt="Portrait of a male store owner"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAz562l2dYzWbuwktoGEXBAu4iSRmtz5FJ4sDssquruvrGIOeR1e0yZqgBScnKmFJ8VzKTW7ggRb65s_YisFKj4qn2RMNiRMq_rPeGNMjVEqqqVNj_IRPYfji9rPILOXTwkoIuhfOV3kgJm00V7gVmbSEq9keMQRDwei3MWr_Xvr5DfSQqP2H4ukG7yGIVAyCGmupuTH6gmVs_4QLXve517iaxIZocIB7TVnuzbgo_6VYbDfbhnXjtHqeclz0k3QJQy3iTVvfrNlTUB"
+                />
+                <div>
+                  <p class="font-bold text-slate-900">Carlos Ruiz</p>
+                  <p class="text-xs text-slate-500">Fundador, MinimalFits</p>
+                </div>
+              </div>
+            </div>
+            <!-- Testimonial 3 -->
+            <div class="hidden rounded-2xl border border-slate-100 bg-white p-8 shadow-sm lg:block">
+              <div class="mb-4 flex items-center text-yellow-400">
+                <span class="material-symbols-outlined fill-current text-[20px]">star</span>
+                <span class="material-symbols-outlined fill-current text-[20px]">star</span>
+                <span class="material-symbols-outlined fill-current text-[20px]">star</span>
+                <span class="material-symbols-outlined fill-current text-[20px]">star</span>
+                <span class="material-symbols-outlined fill-current text-[20px]">star</span>
+              </div>
+              <p class="mb-6 text-slate-600">
+                "El soporte técnico es excelente y la calidad de la visualización de la ropa sobre
+                el cuerpo es muy superior a otras apps."
+              </p>
+              <div class="flex items-center gap-4">
+                <img
+                  alt="Portrait of business woman"
+                  class="h-12 w-12 rounded-full object-cover"
+                  data-alt="Portrait of a female marketing manager"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdwQpvdBBWk8R0no4xL52VGDdrVW48oY_qOZ4aQpapBtTuz6KyYXGgPU9PE8YyWKKJm_ay3T9yFmeYCNRfkDjeL8I1E7hCy-EwL7fep-r07BcBqEeF9prmvyBoDpk9XxilOWIMIIvC0Sg9lE5g0r1RHq-wBkzZR4CJqm1kDFsc5vLDP3ZgNe-xKkU4Kzf0mzgv9Ego9R8EqvKyjNk_IVfyP3ec4XyQdBUoKbdCRabrIYYVE2oXg884abRaCoIBZoNI9vN6XJNmuQIB"
+                />
+                <div>
+                  <p class="font-bold text-slate-900">Elena Gomez</p>
+                  <p class="text-xs text-slate-500">Marketing, StyleHub</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Blog Section -->
+      <section class="bg-white py-20" id="blog">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="mb-12 flex items-end justify-between">
+            <div>
+              <h2 class="text-3xl font-bold tracking-tight text-slate-900">Últimas novedades</h2>
+              <p class="mt-2 text-slate-600">Tendencias en e-commerce y tecnología de moda.</p>
+            </div>
+            <a class="hidden items-center font-bold text-primary hover:underline sm:flex" href="#"
+              >Ver todo el blog
+              <span class="material-symbols-outlined ml-1 text-sm">arrow_forward</span></a
+            >
+          </div>
+          <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+            <article class="group cursor-pointer">
+              <div class="mb-4 aspect-video w-full overflow-hidden rounded-xl bg-slate-100">
+                <img
+                  alt="Fashion runway"
+                  class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  data-alt="Fashion runway blurry background"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCM4DeThWDTigAMmNGa-xj1-O5v1HvvihDDDCLtiVj7ZasO9pLfNpWOr650nyku0m07PqTvNrXqijIvAE1cC6bJIcK4Xq_ZsSkjmV3kSdxCA10d2retZvBHvzdSj98nk4qREbx6gFaTOlcDNIykBeLlqVLnRaXapHe5RdI6syJv_iXS-kw_fCf6tbcjJKb5M7_P5ZpctB0rlxMk0DQIwPMBXAWEwM_i1JjW7UCXqJmlJwy0kGAHAsOW5eggU3w_bYnHPwqflkd9cUAj"
+                />
+              </div>
+              <span class="text-xs font-bold tracking-wide text-primary uppercase">Tendencias</span>
+              <h3
+                class="mt-2 text-xl font-bold text-slate-900 transition-colors group-hover:text-primary"
+              >
+                El futuro de la moda digital en 2024
+              </h3>
+              <p class="mt-2 line-clamp-3 text-sm text-slate-500">
+                Cómo la inteligencia artificial está transformando la manera en que compramos ropa
+                online.
+              </p>
+            </article>
+            <article class="group cursor-pointer">
+              <div class="mb-4 aspect-video w-full overflow-hidden rounded-xl bg-slate-100">
+                <img
+                  alt="Ecommerce analytics meeting"
+                  class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  data-alt="People looking at laptop in meeting"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOIBinqAalOYQ0VKT81ktSAJqlZTuWEwk708jASwSQRcQDw6nxrxKVMef4KfRWcLh4JthyoxrKRC0O3vg3ZNeUZf6svvQaBwX6av7_yU9monVvjT3BNwacEOWdrSOR7VlE4EbX5z8sM2uOAL4_IzUUa1QxJ45jvECE_VF7_T3epIFbBDDlM2PqaIfKy9Ru_Diqeh9IpvDRQei4dPYzVog_RGbh9OasE87S3Gi0PE4vegVYpxzd2R1Ch4zQ_HUe9fT1ddGPKljARPT0"
+                />
+              </div>
+              <span class="text-xs font-bold tracking-wide text-primary uppercase"
+                >Caso de Estudio</span
+              >
+              <h3
+                class="mt-2 text-xl font-bold text-slate-900 transition-colors group-hover:text-primary"
+              >
+                Cómo Zara redujo devoluciones un 15%
+              </h3>
+              <p class="mt-2 line-clamp-3 text-sm text-slate-500">
+                Analizamos las estrategias de los grandes retailers para minimizar el impacto de la
+                logística inversa.
+              </p>
+            </article>
+            <article class="group cursor-pointer">
+              <div class="mb-4 aspect-video w-full overflow-hidden rounded-xl bg-slate-100">
+                <img
+                  alt="Laptop with code"
+                  class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  data-alt="Laptop screen displaying code"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSo0yasxYaTGKiUc-2Mt_eX4p9T-TZd1vSsOuVgPzm0YFj-_0tIbqy6oR66iKckVloCEi0aIbT3ktaQ1tuvixAA-FJrdrcUg1YOghFyID1DS9q7GpgDf2dyprDjIk3VIFdVzm8zQZ1zygIOWfc_mHUjx83An0UdCM4ZRr4vgGCDfVno7RVwDUCslABYvPzQwMZEFr5isqFtq27B_7fg8iraD5Kc2MD3xJwhFBa6Je7CKIMH6x6NzcN1QYtGkYEKIHNX5Jp20YX57KK"
+                />
+              </div>
+              <span class="text-xs font-bold tracking-wide text-primary uppercase">Tecnología</span>
+              <h3
+                class="mt-2 text-xl font-bold text-slate-900 transition-colors group-hover:text-primary"
+              >
+                Integración de GenVTO: Guía Técnica
+              </h3>
+              <p class="mt-2 line-clamp-3 text-sm text-slate-500">
+                Paso a paso para configurar el probador virtual en temas personalizados de Shopify.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+      <!-- Final CTA -->
+      <section class="px-4 py-20">
+        <div
+          class="bg-gradient-primary relative mx-auto max-w-5xl overflow-hidden rounded-3xl px-6 py-16 text-center shadow-2xl sm:px-12"
+        >
+          <!-- Decorative Circles -->
+          <div
+            class="absolute top-0 left-0 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/10 blur-2xl"
+          ></div>
+          <div
+            class="absolute right-0 bottom-0 h-64 w-64 translate-x-1/2 translate-y-1/2 rounded-full bg-black/10 blur-2xl"
+          ></div>
+          <div class="relative z-10">
+            <h2 class="mb-6 text-3xl font-black tracking-tight text-white sm:text-5xl">
+              Empieza gratis en Shopify hoy mismo
+            </h2>
+            <p class="mx-auto mb-10 max-w-2xl text-lg text-white/80">
+              Únete a más de 500 marcas de moda que ya están revolucionando la experiencia de compra
+              de sus clientes.
+            </p>
+            <div class="flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <button
+                class="w-full rounded-xl bg-white px-8 py-4 text-lg font-bold text-primary shadow-lg transition-all hover:scale-105 hover:bg-slate-100 sm:w-auto"
+              >
+                Instalar GenVTO Gratis
+              </button>
+              <button
+                class="w-full rounded-xl border border-white/30 bg-white/10 px-8 py-4 text-lg font-bold text-white backdrop-blur-sm transition-all hover:bg-white/20 sm:w-auto"
+              >
+                Agendar Demo
+              </button>
+            </div>
+            <p class="mt-6 text-sm text-white/60">
+              No requiere tarjeta de crédito para el plan Starter.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- Footer -->
+    <footer class="bg-background-dark border-t border-slate-800 pt-16 pb-8 text-white">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="mb-16 grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4">
+          <div>
+            <div class="mb-6 flex items-center gap-2">
+              <div
+                class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white"
+              >
+                <span class="material-symbols-outlined text-[20px]">view_in_ar</span>
+              </div>
+              <span class="text-xl font-bold tracking-tight">GenVTO</span>
+            </div>
+            <p class="text-sm leading-relaxed text-slate-400">
+              La solución líder de probadores virtuales con Inteligencia Artificial para marcas de
+              moda en Shopify.
+            </p>
+            <div class="mt-6 flex gap-4">
+              <!-- Social Icons Placeholders -->
+              <a class="text-slate-400 transition-colors hover:text-white" href="#"
+                ><span class="sr-only">Twitter</span
+                ><svg class="h-5 w-5" fill="currentColor" viewbox="0 0 24 24">
+                  <path
+                    d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"
+                  ></path></svg
+              ></a>
+              <a class="text-slate-400 transition-colors hover:text-white" href="#"
+                ><span class="sr-only">LinkedIn</span
+                ><svg class="h-5 w-5" fill="currentColor" viewbox="0 0 24 24">
+                  <path
+                    d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
+                  ></path></svg
+              ></a>
+            </div>
+          </div>
+          <div>
+            <h3 class="mb-4 text-sm font-bold tracking-wider text-white uppercase">Producto</h3>
+            <ul class="space-y-3">
+              <li>
+                <a class="text-sm text-slate-400 transition-colors hover:text-primary" href="#"
+                  >Cómo funciona</a
+                >
+              </li>
+              <li>
+                <a class="text-sm text-slate-400 transition-colors hover:text-primary" href="#"
+                  >Precios</a
+                >
+              </li>
+              <li>
+                <a class="text-sm text-slate-400 transition-colors hover:text-primary" href="#"
+                  >Integraciones</a
+                >
+              </li>
+              <li>
+                <a class="text-sm text-slate-400 transition-colors hover:text-primary" href="#"
+                  >Changelog</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="mb-4 text-sm font-bold tracking-wider text-white uppercase">Recursos</h3>
+            <ul class="space-y-3">
+              <li>
+                <a class="text-sm text-slate-400 transition-colors hover:text-primary" href="#"
+                  >Blog</a
+                >
+              </li>
+              <li>
+                <a class="text-sm text-slate-400 transition-colors hover:text-primary" href="#"
+                  >Documentación</a
+                >
+              </li>
+              <li>
+                <a class="text-sm text-slate-400 transition-colors hover:text-primary" href="#"
+                  >Centro de Ayuda</a
+                >
+              </li>
+              <li>
+                <a class="text-sm text-slate-400 transition-colors hover:text-primary" href="#"
+                  >Comunidad</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="mb-4 text-sm font-bold tracking-wider text-white uppercase">Legal</h3>
+            <ul class="space-y-3">
+              <li>
+                <a class="text-sm text-slate-400 transition-colors hover:text-primary" href="#"
+                  >Privacidad</a
+                >
+              </li>
+              <li>
+                <a class="text-sm text-slate-400 transition-colors hover:text-primary" href="#"
+                  >Términos</a
+                >
+              </li>
+              <li>
+                <a class="text-sm text-slate-400 transition-colors hover:text-primary" href="#"
+                  >Seguridad</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div
+          class="flex flex-col items-center justify-between gap-4 border-t border-slate-800 pt-8 md:flex-row"
+        >
+          <p class="text-sm text-slate-500">© 2024 GenVTO Inc. Todos los derechos reservados.</p>
+          <div class="flex items-center gap-2">
+            <span class="h-2 w-2 rounded-full bg-green-500"></span>
+            <span class="text-xs text-slate-400">Todos los sistemas operativos</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
