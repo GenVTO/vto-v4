@@ -3,25 +3,7 @@ import type { APIRoute } from 'astro'
 import { json } from '@/lib/http'
 import { runtime } from '@/lib/runtime'
 
-interface RuntimeLocals {
-  runtime?: {
-    env?: Record<string, unknown>
-  }
-}
-
-export const GET: APIRoute = async (context) => {
-  const env = (context.locals as RuntimeLocals)?.runtime?.env
-  const isDev =
-    import.meta.env.DEV ||
-    import.meta.env.NODE_ENV === 'development' ||
-    env?.NODE_ENV === 'development' ||
-    context.url.hostname === 'localhost' ||
-    context.url.hostname === '127.0.0.1'
-
-  if (!isDev) {
-    return new Response('Not Found', { status: 404 })
-  }
-
+export const GET: APIRoute = async () => {
   const tenants = await runtime.db.listTenants()
   const items = await Promise.all(
     tenants.map(async (tenant) => {

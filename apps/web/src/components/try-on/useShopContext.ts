@@ -22,7 +22,7 @@ export function useShopContext({ setValue, tenantId }: UseShopContextProps) {
   const loadShops = useCallback(async () => {
     setIsLoadingShops(true)
     try {
-      const response = await fetch('/api/v1/dev/shops')
+      const response = await fetch('/api/v1/admin/shops')
       if (!response.ok) {
         return
       }
