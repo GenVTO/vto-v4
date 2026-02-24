@@ -9,6 +9,7 @@ interface Props {
   description?: string
   image?: string
   canonicalURL?: string
+  isAdmin?: boolean
 }
 
 const {
@@ -16,6 +17,7 @@ const {
   description = APP_CONFIG.seo.defaultDescription,
   image = APP_CONFIG.seo.openGraph.images[0].url,
   canonicalURL = new URL(Astro.url.pathname, APP_CONFIG.seo.siteUrl).href,
+  isAdmin = false,
 } = Astro.props
 
 const formattedTitle =
@@ -69,7 +71,7 @@ const formattedTitle =
   <body
     class="bg-background-light selection:bg-primary overflow-x-hidden font-sans text-slate-900 antialiased selection:text-white"
   >
-    <Header client:load />
+    <Header client:load isAdmin={isAdmin} />
     <slot />
   </body>
 </html>

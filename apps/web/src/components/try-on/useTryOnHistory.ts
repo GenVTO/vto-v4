@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 
-import type { TryOnHistoryResponse } from './TryOnHistoryResults'
+import type { TryOnHistoryResponse } from './history/types'
 
 const DEFAULT_API_KEY = 'dev_vto_api_key'
 const DEFAULT_SHOP_DOMAIN = 'demo-shop.myshopify.com'

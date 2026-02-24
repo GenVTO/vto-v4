@@ -11,7 +11,7 @@ interface Props {
 const { title, description, maxWidth = 'max-w-4xl' } = Astro.props
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} isAdmin={true}>
   <main class={cn('mx-auto px-5 pt-24 pb-20 sm:px-8', maxWidth)}>
     <slot />
   </main>

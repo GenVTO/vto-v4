@@ -7,9 +7,9 @@ import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/co
 import { APP_CONFIG } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
-export function Header() {
+export function Header({ isAdmin: initialIsAdmin = false }: { isAdmin?: boolean }) {
   const [isScrolled, setIsScrolled] = useState(false)
-  const [isAdmin, setIsAdmin] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(initialIsAdmin)
   const shopifyUrl = APP_CONFIG.links.shopify
 
   useEffect(() => {
@@ -18,11 +18,13 @@ export function Header() {
     }
     window.addEventListener('scroll', handleScroll)
 
-    // Check if we are in admin section
-    setIsAdmin(globalThis.location.pathname.startsWith('/admin'))
+    // Check if we are in admin section ONLY if not provided by prop (fallback)
+    if (initialIsAdmin === undefined) {
+      setIsAdmin(globalThis.location.pathname.startsWith('/admin'))
+    }
 
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [initialIsAdmin])
 
   const navLinks = isAdmin
     ? APP_CONFIG.navigation.admin.map((link) => ({ href: link.href, name: link.label }))
