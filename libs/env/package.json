@@ -9,8 +9,11 @@
     "./server": "./src/server.ts",
     "./fashn": "./src/fashn.ts",
     "./r2": "./src/r2.ts",
+    "./s3": "./src/s3.ts",
+    "./storage": "./src/storage.ts",
     "./supabase": "./src/supabase.ts",
-    "./logger": "./src/logger.ts"
+    "./logger": "./src/logger.ts",
+    "./sqlite": "./src/sqlite.ts"
   },
   "scripts": {
     "type-check": "tsc --noEmit",

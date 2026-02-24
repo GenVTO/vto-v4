@@ -3,7 +3,7 @@ import type {
   TryOnProviderStatusResult,
   TryOnProviderSubmitPayload,
   TryOnProviderSubmitResult,
-} from '@vto/try-on/contracts'
+} from '@vto/types'
 
 import { createLogger } from '@vto/logger'
 

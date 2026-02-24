@@ -1,4 +1,4 @@
-import type { CreateTryOnRequest, TryOnHistoryQuery, TryOnJob, TryOnJobStatus } from '@vto/types'
+import type { CreateTryOnRequest, TryOnHistoryQuery, TryOnJob, TryOnJobStatus } from './try-on'
 
 export interface CreditEventInput {
   tenantId: string
@@ -13,10 +13,44 @@ export type CreateJobInput = CreateTryOnRequest & {
   userImageHash: string
 }
 
+export interface CreditSnapshot {
+  availableCredits: number
+  completedConsumedCount: number
+  failedChargedCount: number
+  inFlightReservedCount: number
+  refundedCredits: number
+  reservedOrSpentCredits: number
+}
+
+export type TryOnJobEventType =
+  | 'api_request_received'
+  | 'input_images_uploaded'
+  | 'provider_submit_started'
+  | 'provider_submit_succeeded'
+  | 'provider_submit_failed'
+  | 'provider_poll_started'
+  | 'provider_poll_completed'
+  | 'provider_result_persist_started'
+  | 'provider_result_persisted'
+  | 'provider_result_persist_failed'
+  | 'job_status_updated'
+  | 'result_delivered_to_client'
+
+export interface TryOnJobEventInput {
+  tenantId: string
+  jobId: string
+  eventType: TryOnJobEventType
+  metadata?: Record<string, unknown>
+  occurredAt?: string
+}
+
 export interface DbGateway {
   validateApiKey(apiKey: string): Promise<{ tenantId: string; shopDomain: string } | null>
   hasCredits(tenantId: string): Promise<boolean>
-  reserveCredit(tenantId: string): Promise<void>
+  getCreditBalance(tenantId: string): Promise<number>
+  getCreditSnapshot(tenantId: string): Promise<CreditSnapshot>
+  listTenants(): Promise<{ tenantId: string; shopDomain: string }[]>
+  reserveCreditForJob(tenantId: string, jobId: string): Promise<void>
   recordCreditEvent(input: CreditEventInput): Promise<void>
 
   findCachedResult(input: {
@@ -29,6 +63,7 @@ export interface DbGateway {
   saveJobIdempotency(tenantId: string, key: string, jobId: string): Promise<void>
 
   createJob(input: CreateJobInput): Promise<TryOnJob>
+  recordJobEvent(input: TryOnJobEventInput): Promise<void>
   updateJobStatus(input: {
     jobId: string
     status: TryOnJobStatus

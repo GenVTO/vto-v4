@@ -1,10 +1,18 @@
+import type {
+  PersistTryOnResultInput,
+  PersistTryOnResultOutput,
+  PutObjectInput,
+  SignedUrlOptions,
+  StorageGateway,
+} from '@vto/types'
+
 import { createLogger } from '@vto/logger'
 // oxlint-disable-next-line import/no-nodejs-modules
 import { mkdir, access, copyFile, rm, writeFile } from 'node:fs/promises'
 // oxlint-disable-next-line import/no-nodejs-modules
 import { dirname, join, normalize, resolve } from 'node:path'
 
-import type { PutObjectInput, SignedUrlOptions, StorageGateway } from './contracts'
+import { buildTryOnResultKey, downloadProviderResult, toUint8Array } from './helpers'
 
 const diskStorageLogger = createLogger({ service: '@vto/storage-disk' })
 
@@ -13,44 +21,16 @@ export interface InDiskStorageOptions {
 }
 
 const DEFAULT_BASE_DIR = '.vto-storage'
+const SECONDS_IN_MINUTE = 60
+const MINUTES_IN_HOUR = 60
+const HOURS_IN_DAY = 24
+const DAYS_IN_MONTH = 30
+const TRYON_RESULT_URL_TTL_SECONDS =
+  SECONDS_IN_MINUTE * MINUTES_IN_HOUR * HOURS_IN_DAY * DAYS_IN_MONTH
 
 function safeJoin(baseDir: string, key: string): string {
   const normalizedKey = normalize(key).replace(/^(\.\.(\/|\\|$))+/, '')
   return resolve(join(baseDir, normalizedKey))
-}
-
-async function toUint8Array(body: PutObjectInput['body']): Promise<Uint8Array> {
-  if (body instanceof Uint8Array) {
-    return body
-  }
-
-  if (body instanceof ArrayBuffer) {
-    return new Uint8Array(body)
-  }
-
-  if (typeof ReadableStream !== 'undefined' && body instanceof ReadableStream) {
-    const reader = body.getReader()
-    const chunks: Uint8Array[] = []
-
-    while (true) {
-      const result = await reader.read()
-      if (result.done) {
-        break
-      }
-      chunks.push(result.value)
-    }
-
-    const total = chunks.reduce((size, chunk) => size + chunk.byteLength, 0)
-    const merged = new Uint8Array(total)
-    let offset = 0
-    for (const chunk of chunks) {
-      merged.set(chunk, offset)
-      offset += chunk.byteLength
-    }
-    return merged
-  }
-
-  return new Uint8Array()
 }
 
 export class InDiskStorageGateway implements StorageGateway {
@@ -101,6 +81,56 @@ export class InDiskStorageGateway implements StorageGateway {
     const filePath = safeJoin(this.baseDir, key)
     await rm(filePath, { force: true })
     diskStorageLogger.debug('In-disk object deleted', { key })
+  }
+
+  async persistTryOnResult(input: PersistTryOnResultInput): Promise<PersistTryOnResultOutput> {
+    diskStorageLogger.info('Persisting try-on result in disk storage', {
+      job_id: input.jobId,
+      provider: input.providerName ?? 'unknown',
+      source_url: input.providerResultUrl,
+    })
+
+    const { body, contentType } = await downloadProviderResult(input.providerResultUrl)
+    const key = buildTryOnResultKey(input, contentType)
+
+    await this.uploadResultToDisk({
+      body,
+      contentType,
+      input,
+      key,
+    })
+
+    const resultUrl = await this.getSignedUrl(key, {
+      expiresInSeconds: TRYON_RESULT_URL_TTL_SECONDS,
+    })
+    return {
+      contentType,
+      key,
+      resultUrl,
+      sizeBytes: body.byteLength,
+    }
+  }
+
+  private async uploadResultToDisk(params: {
+    body: ArrayBuffer
+    contentType: string
+    input: PersistTryOnResultInput
+    key: string
+  }): Promise<void> {
+    const { body, contentType, input, key } = params
+    await this.put({
+      body,
+      contentType,
+      key,
+      metadata: {
+        created_at: input.createdAt ?? '',
+        job_id: input.jobId,
+        provider: input.providerName ?? 'unknown',
+        source: 'provider-result',
+        updated_at: input.updatedAt ?? '',
+        ...input.metadata,
+      },
+    })
   }
 }
 

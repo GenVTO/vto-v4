@@ -1,4 +1,10 @@
-import type { PutObjectInput, SignedUrlOptions, StorageGateway } from '@vto/storage/contracts'
+import type {
+  PersistTryOnResultInput,
+  PersistTryOnResultOutput,
+  PutObjectInput,
+  SignedUrlOptions,
+  StorageGateway,
+} from '@vto/types'
 
 import { createLogger } from '@vto/logger'
 
@@ -17,6 +23,39 @@ export interface R2StorageGatewayOptions {
   publicBaseUrl?: string
 }
 const storageLogger = createLogger({ service: '@vto/r2-storage' })
+const TRYON_RESULT_URL_TTL_SECONDS = 60 * 60 * 24 * 30
+
+function sanitizeStoragePathSegment(value: string): string {
+  return value
+    .trim()
+    .toLowerCase()
+    .replaceAll(/[^a-z0-9._-]+/g, '-')
+    .replaceAll(/^-+|-+$/g, '')
+    .slice(0, 80)
+}
+
+function extensionFromContentType(contentType: string): string {
+  const normalized = contentType.toLowerCase()
+  if (normalized.includes('png')) {
+    return 'png'
+  }
+  if (normalized.includes('webp')) {
+    return 'webp'
+  }
+  if (normalized.includes('gif')) {
+    return 'gif'
+  }
+  if (normalized.includes('avif')) {
+    return 'avif'
+  }
+  return 'jpg'
+}
+
+function buildTryOnResultKey(input: PersistTryOnResultInput, contentType: string): string {
+  const shop = sanitizeStoragePathSegment(input.shopDomain) || 'unknown-shop'
+  const ext = extensionFromContentType(contentType)
+  return `try-on/results/${shop}/${input.jobId}/result.${ext}`
+}
 
 export class R2StorageGateway implements StorageGateway {
   private readonly bucket: R2LikeBucket
@@ -83,5 +122,47 @@ export class R2StorageGateway implements StorageGateway {
       key,
     })
     await this.bucket.delete(key)
+  }
+
+  async persistTryOnResult(input: PersistTryOnResultInput): Promise<PersistTryOnResultOutput> {
+    storageLogger.info('Persisting try-on result in R2 storage', {
+      job_id: input.jobId,
+      provider: input.providerName ?? 'unknown',
+      source_url: input.providerResultUrl,
+    })
+
+    const sourceResponse = await fetch(input.providerResultUrl)
+    if (!sourceResponse.ok) {
+      throw new Error(`Provider result download failed (${sourceResponse.status})`)
+    }
+
+    const contentTypeHeader = sourceResponse.headers.get('content-type')
+    const contentType = contentTypeHeader?.split(';')[0]?.trim() || 'image/jpeg'
+    const body = await sourceResponse.arrayBuffer()
+    const key = buildTryOnResultKey(input, contentType)
+
+    await this.put({
+      body,
+      contentType,
+      key,
+      metadata: {
+        created_at: input.createdAt ?? '',
+        job_id: input.jobId,
+        provider: input.providerName ?? 'unknown',
+        source: 'provider-result',
+        updated_at: input.updatedAt ?? '',
+        ...input.metadata,
+      },
+    })
+
+    const resultUrl = await this.getSignedUrl(key, {
+      expiresInSeconds: TRYON_RESULT_URL_TTL_SECONDS,
+    })
+    return {
+      contentType,
+      key,
+      resultUrl,
+      sizeBytes: body.byteLength,
+    }
   }
 }

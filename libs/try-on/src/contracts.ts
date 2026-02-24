@@ -1,36 +1,14 @@
-import type { DbGateway } from '@vto/db/contracts'
 import type {
   CreateTryOnRequest,
   CreateTryOnResponse,
+  DbGateway,
+  StorageGateway,
   TryOnHistoryQuery,
   TryOnHistoryResponse,
   TryOnJob,
   TryOnModel,
+  TryOnProvider,
 } from '@vto/types'
-
-export interface TryOnProviderSubmitPayload {
-  model: TryOnModel
-  productImageUrl: string
-  personImageUrl: string
-  params?: Record<string, unknown>
-}
-
-export interface TryOnProviderSubmitResult {
-  providerJobId: string
-  provider: string
-  acceptedAt: string
-}
-
-export interface TryOnProviderStatusResult {
-  status: 'queued' | 'processing' | 'completed' | 'failed' | 'provider_expired'
-  resultUrl?: string
-  error?: string
-}
-
-export interface TryOnProvider {
-  submit(payload: TryOnProviderSubmitPayload): Promise<TryOnProviderSubmitResult>
-  status(providerJobId: string): Promise<TryOnProviderStatusResult>
-}
 
 export interface RunTryOnContext {
   tenantId: string
@@ -46,6 +24,8 @@ export interface TryOnGateway {
 
 export interface CreateTryOnGatewayOptions {
   db: DbGateway
+  storage: StorageGateway
   providers: Record<string, TryOnProvider>
-  modelProviderMap: Record<TryOnModel, string>
+  modelProviderMap?: Record<TryOnModel, string>
+  modelProviderOrderMap?: Partial<Record<TryOnModel, string[]>>
 }

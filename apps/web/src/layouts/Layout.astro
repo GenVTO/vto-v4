@@ -7,7 +7,13 @@ const { title = 'VTO', description = '' } = Astro.props
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
   </head>
@@ -35,6 +41,10 @@ const { title = 'VTO', description = '' } = Astro.props
           <a
             class="hover:bg-muted rounded-lg border px-3 py-2 text-sm font-semibold"
             href="/try-on">API Playground</a
+          >
+          <a
+            class="hover:bg-muted rounded-lg border px-3 py-2 text-sm font-semibold"
+            href="/try-on-history">Histórico</a
           >
         </nav>
       </div>

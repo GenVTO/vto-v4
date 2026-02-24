@@ -4,8 +4,7 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts",
-    "./contracts": "./src/contracts.ts"
+    ".": "./src/index.ts"
   },
   "scripts": {
     "type-check": "tsc --noEmit",
@@ -13,7 +12,10 @@
   },
   "dependencies": {
     "@vto/db": "workspace:*",
+    "@vto/env": "workspace:*",
+    "@vto/fashn": "workspace:*",
     "@vto/logger": "workspace:*",
+    "@vto/storage": "workspace:*",
     "@vto/types": "workspace:*"
   }
 }

@@ -4,6 +4,15 @@ import type { EnvSource } from './core'
 
 import { collectEnv, commonAliases, parseWithSchema, resolveEnvValue } from './core'
 
+function normalizeOptionalString(value: string | undefined): string | undefined {
+  if (!value) {
+    return undefined
+  }
+
+  const normalized = value.trim()
+  return normalized.length > 0 ? normalized : undefined
+}
+
 export const r2EnvSchema = z
   .object({
     R2_BUCKET_BINDING: z.string().min(1).optional(),
@@ -21,14 +30,18 @@ export function parseR2Env(source?: EnvSource): R2Env {
   const env = collectEnv({ source })
 
   return parseWithSchema(r2EnvSchema, {
-    R2_BUCKET_BINDING: resolveEnvValue(env, 'R2_BUCKET_BINDING', {
-      aliases: commonAliases('R2_BUCKET_BINDING'),
-    }),
+    R2_BUCKET_BINDING: normalizeOptionalString(
+      resolveEnvValue(env, 'R2_BUCKET_BINDING', {
+        aliases: commonAliases('R2_BUCKET_BINDING'),
+      }),
+    ),
     R2_BUCKET_NAME: resolveEnvValue(env, 'R2_BUCKET_NAME', {
       aliases: commonAliases('R2_BUCKET_NAME'),
     }),
-    R2_PUBLIC_BASE_URL: resolveEnvValue(env, 'R2_PUBLIC_BASE_URL', {
-      aliases: commonAliases('R2_PUBLIC_BASE_URL'),
-    }),
+    R2_PUBLIC_BASE_URL: normalizeOptionalString(
+      resolveEnvValue(env, 'R2_PUBLIC_BASE_URL', {
+        aliases: commonAliases('R2_PUBLIC_BASE_URL'),
+      }),
+    ),
   })
 }

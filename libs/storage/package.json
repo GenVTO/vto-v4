@@ -4,15 +4,17 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts",
-    "./contracts": "./src/contracts.ts"
+    ".": "./src/index.ts"
   },
   "scripts": {
     "type-check": "tsc --noEmit",
     "test": "vitest run"
   },
   "dependencies": {
+    "@vto/env": "workspace:*",
     "@vto/logger": "workspace:*",
+    "@vto/r2-storage": "workspace:*",
+    "@vto/s3-storage": "workspace:*",
     "@vto/types": "workspace:*"
   }
 }

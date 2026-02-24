@@ -1,4 +1,4 @@
-import { createInMemoryDbGateway } from './index'
+import { createDbGateway, createInMemoryDbGateway } from './index'
 
 function createGateway() {
   return createInMemoryDbGateway({
@@ -14,6 +14,25 @@ function createGateway() {
 }
 
 describe('InMemoryDbGateway', () => {
+  it('falls back to in-memory gateway from env when supabase env is missing', async () => {
+    const gateway = createDbGateway({
+      env: {},
+      seedTenants: [
+        {
+          apiKey: 'api_key_env_fallback',
+          credits: 5,
+          shopDomain: 'fallback.myshopify.com',
+          tenantId: 'tenant_fallback',
+        },
+      ],
+    })
+
+    await expect(gateway.validateApiKey('api_key_env_fallback')).resolves.toEqual({
+      shopDomain: 'fallback.myshopify.com',
+      tenantId: 'tenant_fallback',
+    })
+  })
+
   it('validates API key and tenant mapping', async () => {
     const gateway = createGateway()
 
@@ -28,10 +47,10 @@ describe('InMemoryDbGateway', () => {
     const gateway = createGateway()
 
     await expect(gateway.hasCredits('tenant_1')).resolves.toBeTruthy()
-    await expect(gateway.reserveCredit('tenant_1')).resolves.toBeUndefined()
-    await expect(gateway.reserveCredit('tenant_1')).resolves.toBeUndefined()
+    await expect(gateway.reserveCreditForJob('tenant_1', 'job-1')).resolves.toBeUndefined()
+    await expect(gateway.reserveCreditForJob('tenant_1', 'job-2')).resolves.toBeUndefined()
     await expect(gateway.hasCredits('tenant_1')).resolves.toBeFalsy()
-    await expect(gateway.reserveCredit('tenant_1')).rejects.toThrow('No credits')
+    await expect(gateway.reserveCreditForJob('tenant_1', 'job-3')).rejects.toThrow('No credits')
   })
 
   it('creates and updates jobs, and supports idempotency lookup', async () => {

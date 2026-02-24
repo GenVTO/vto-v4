@@ -32,7 +32,7 @@ export const tryOnHistoryQuerySchema = z.object({
   offset: z.coerce.number().int().min(0).default(0),
   product_id: z.string().optional(),
   shop_domain: z.string().min(3),
-  visitor_id: z.string().min(8),
+  visitor_id: z.string().min(8).optional(),
 })
 
 export type CreateTryOnRequestInput = z.infer<typeof createTryOnRequestSchema>

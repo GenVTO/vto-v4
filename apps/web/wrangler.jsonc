@@ -1,0 +1,110 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "vto-web",
+  "account_id": "ec3f940f656c563a66df8800080ce6fc",
+  "main": "./dist/_worker.js/index.js",
+  "compatibility_date": "2026-02-21",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+  },
+  "env": {
+    "local": {
+      "name": "vto-web-local",
+      "workers_dev": true,
+      "vars": {
+        "NODE_ENV": "development",
+        "R2_CONFIGS_JSON": "[]",
+        "STORAGE_PROVIDER_ORDER": "s3:local,disk",
+        "STORAGE_PUBLIC_URL_OVERRIDE": "https://s3-supa-dev.genvto.com",
+        "LOG_LEVEL": "debug",
+        "LOG_ENABLE_PINO": "true",
+        "LOG_ENABLE_SENTRY": "false",
+        "LOG_ENABLE_AXIOM": "false",
+        "AXIOM_DATASET": "api-local",
+        "TRYON_PROVIDER_ORDER": "fashn",
+      },
+      "kv_namespaces": [
+        {
+          "binding": "SESSION",
+          "id": "362d9d36645d4bf38b909eeaf2016a3a",
+          "preview_id": "ff1f5e0024434a6590cb7cba95797b3c",
+        },
+      ],
+    },
+    "development": {
+      "name": "vto-web-dev",
+      "workers_dev": true,
+      "routes": [
+        {
+          "pattern": "development-env.genvto.com",
+          "custom_domain": true,
+        },
+      ],
+      "vars": {
+        "NODE_ENV": "development",
+        "R2_CONFIGS_JSON": "[{\"name\":\"cloudflare\",\"binding\":\"TRYON_ASSETS\",\"bucketName\":\"vto-tryon-dev\",\"publicBaseUrl\":\"https://dev-img.genvto.com\"}]",
+        "STORAGE_PROVIDER_ORDER": "r2:cloudflare",
+        "LOG_LEVEL": "debug",
+        "LOG_ENABLE_PINO": "true",
+        "LOG_ENABLE_SENTRY": "false",
+        "LOG_ENABLE_AXIOM": "false",
+        "AXIOM_DATASET": "api-dev",
+        "TRYON_PROVIDER_ORDER": "fashn",
+      },
+      "r2_buckets": [
+        {
+          "binding": "TRYON_ASSETS",
+          "bucket_name": "vto-tryon-dev",
+        },
+      ],
+      "kv_namespaces": [
+        {
+          "binding": "SESSION",
+          "id": "0b422db1074c417e9e5f3d69ff5e7a00",
+          "preview_id": "c7ce4fc0208b470aa41450dc8d635776",
+        },
+      ],
+    },
+    "production": {
+      "name": "vto-web-prod",
+      "workers_dev": true,
+      "routes": [
+        {
+          "pattern": "www.genvto.com",
+          "custom_domain": true,
+        },
+        {
+          "pattern": "genvto.com",
+          "custom_domain": true,
+        },
+      ],
+      "vars": {
+        "NODE_ENV": "production",
+        "R2_CONFIGS_JSON": "[{\"name\":\"cloudflare\",\"binding\":\"TRYON_ASSETS\",\"bucketName\":\"vto-tryon-prod\",\"publicBaseUrl\":\"https://img.genvto.com\"}]",
+        "STORAGE_PROVIDER_ORDER": "r2:cloudflare",
+        "LOG_LEVEL": "info",
+        "LOG_ENABLE_PINO": "true",
+        "LOG_ENABLE_SENTRY": "true",
+        "LOG_ENABLE_AXIOM": "true",
+        "AXIOM_DATASET": "api",
+        "TRYON_PROVIDER_ORDER": "fashn",
+      },
+      "r2_buckets": [
+        {
+          "binding": "TRYON_ASSETS",
+          "bucket_name": "vto-tryon-prod",
+        },
+      ],
+      "kv_namespaces": [
+        {
+          "binding": "SESSION",
+          "id": "6d149034379f429399c58cc2dff40661",
+          "preview_id": "01f99a8afb554f539a740536b7350f8e",
+        },
+      ],
+    },
+  },
+}

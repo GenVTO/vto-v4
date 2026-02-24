@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "@vto/logger": "workspace:*",
-    "@vto/storage": "workspace:*",
     "@vto/types": "workspace:*"
   }
 }

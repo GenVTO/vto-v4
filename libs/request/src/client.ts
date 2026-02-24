@@ -1,5 +1,5 @@
 import { createLogger } from '@vto/logger'
-import { toHttpStatusName } from '@vto/types/http-status'
+import { HTTP_STATUS, toHttpStatusName } from '@vto/types/http-status'
 import wretch from 'wretch'
 import { retry } from 'wretch/middlewares'
 
@@ -31,12 +31,11 @@ function buildPathWithQuery(path: string, query?: RequestOptions['query']): stri
   }
 
   const search = new URLSearchParams()
-  for (const [key, value] of Object.entries(query)) {
-    if (value === undefined || value === null) {
-      continue
+  Object.entries(query).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      search.set(key, String(value))
     }
-    search.set(key, String(value))
-  }
+  })
 
   const encoded = search.toString()
   if (!encoded) {
@@ -49,7 +48,7 @@ function buildPathWithQuery(path: string, query?: RequestOptions['query']): stri
 async function parseResponse<TResponse>(response: Response): Promise<TResponse> {
   const contentType = response.headers.get('content-type') ?? ''
 
-  if (response.status === 204) {
+  if (response.status === HTTP_STATUS.HTTP_STATUS_NO_CONTENT) {
     return undefined as TResponse
   }
 
@@ -61,7 +60,11 @@ async function parseResponse<TResponse>(response: Response): Promise<TResponse> 
 }
 
 function normalizeUnknownError(error: unknown): RequestError {
-  const fallback = new RequestError('Unexpected request failure.', null, null)
+  const fallback = new RequestError({
+    message: 'Unexpected request failure.',
+    statusCode: null,
+    statusName: null,
+  })
 
   if (!error || typeof error !== 'object') {
     return fallback
@@ -81,14 +84,19 @@ function normalizeUnknownError(error: unknown): RequestError {
       ? maybeError.message
       : 'Request failed.'
 
-  return new RequestError(message, statusCode, statusName, maybeError.json ?? maybeError.text)
+  return new RequestError({
+    details: maybeError.json ?? maybeError.text,
+    message,
+    statusCode,
+    statusName,
+  })
 }
 
-export function createRequestClient(options: RequestClientOptions): RequestClient {
-  const baseUrl = normalizeBaseUrl(options.baseUrl)
+export function createRequestClient(clientOptions: RequestClientOptions): RequestClient {
+  const baseUrl = normalizeBaseUrl(clientOptions.baseUrl)
   const mergedRetry = {
     ...DEFAULT_RETRY_OPTIONS,
-    ...options.retry,
+    ...clientOptions.retry,
   }
 
   const middlewareChain = [
@@ -97,11 +105,11 @@ export function createRequestClient(options: RequestClientOptions): RequestClien
       maxAttempts: mergedRetry.maxAttempts,
       retryOnNetworkError: mergedRetry.retryOnNetworkError,
     }),
-    ...(options.middlewares ?? []),
+    ...(clientOptions.middlewares ?? []),
   ]
 
   const client = wretch(baseUrl)
-    .headers(options.defaultHeaders ?? {})
+    .headers(clientOptions.defaultHeaders ?? {})
     .middlewares(middlewareChain as never[])
 
   async function request<TResponse>(
@@ -124,47 +132,53 @@ export function createRequestClient(options: RequestClientOptions): RequestClien
       req = req.options({ signal: controller.signal })
     }
 
-    try {
-      const response = await ((): Promise<Response> => {
-        switch (method) {
-          case 'GET': {
-            return req.get().res()
-          }
-          case 'POST': {
-            return (
-              requestOptions.body !== undefined
-                ? req.json(requestOptions.body as Record<string, unknown>)
-                : req
-            )
-              .post()
-              .res()
-          }
-          case 'PUT': {
-            return (
-              requestOptions.body !== undefined
-                ? req.json(requestOptions.body as Record<string, unknown>)
-                : req
-            )
-              .put()
-              .res()
-          }
-          case 'PATCH': {
-            return (
-              requestOptions.body !== undefined
-                ? req.json(requestOptions.body as Record<string, unknown>)
-                : req
-            )
-              .patch()
-              .res()
-          }
-          case 'DELETE': {
-            return req.delete().res()
-          }
-          default: {
-            throw new RequestError(`Unsupported method: ${method}`, null, null)
-          }
+    async function executeMethod(req: ReturnType<typeof client.url>): Promise<Response> {
+      switch (method) {
+        case 'GET': {
+          return req.get().res()
         }
-      })()
+        case 'POST': {
+          return (
+            requestOptions.body === undefined
+              ? req
+              : req.json(requestOptions.body as Record<string, unknown>)
+          )
+            .post()
+            .res()
+        }
+        case 'PUT': {
+          return (
+            requestOptions.body === undefined
+              ? req
+              : req.json(requestOptions.body as Record<string, unknown>)
+          )
+            .put()
+            .res()
+        }
+        case 'PATCH': {
+          return (
+            requestOptions.body === undefined
+              ? req
+              : req.json(requestOptions.body as Record<string, unknown>)
+          )
+            .patch()
+            .res()
+        }
+        case 'DELETE': {
+          return req.delete().res()
+        }
+        default: {
+          throw new RequestError({
+            message: `Unsupported method: ${method}`,
+            statusCode: null,
+            statusName: null,
+          })
+        }
+      }
+    }
+
+    try {
+      const response = await executeMethod(req)
 
       requestLogger.debug('HTTP request completed', {
         duration_ms: Date.now() - startedAt,

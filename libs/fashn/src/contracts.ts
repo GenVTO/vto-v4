@@ -1,6 +1,6 @@
 import type { EnvSource } from '@vto/env/core'
 import type { RequestClient } from '@vto/request'
-import type { TryOnProviderStatusResult } from '@vto/try-on/contracts'
+import type { TryOnProviderStatusResult } from '@vto/types'
 
 export interface FashnClient {
   run(payload: {

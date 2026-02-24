@@ -1,26 +1,10 @@
-import { defineConfig } from 'vitest/config'
+import { mergeConfig } from 'vitest/config'
 
-export default defineConfig({
+import { sharedConfig } from './vitest.shared'
+
+export default mergeConfig(sharedConfig, {
   test: {
-    coverage: {
-      exclude: [
-        '**/*.d.ts',
-        '**/*.config.ts',
-        '**/dist/**',
-        '**/node_modules/**',
-        '**/test/**',
-        '**/*.test.ts',
-        '**/*.test.tsx',
-      ],
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
-    },
-    env: {
-      NODE_ENV: 'test',
-    },
     environment: 'node',
-    globals: true,
-    passWithNoTests: true,
-    watch: false,
+    // Removed restrictive include to allow default discovery in monorepo packages
   },
 })

@@ -1,8 +1,13 @@
-import type { TryOnHistoryQuery, TryOnJob } from '@vto/types'
+import type {
+  CreateJobInput,
+  CreditEventInput,
+  DbGateway,
+  TryOnJobEventInput,
+  TryOnHistoryQuery,
+  TryOnJob,
+} from '@vto/types'
 
 import { createLogger } from '@vto/logger'
-
-import type { CreditEventInput, CreateJobInput, DbGateway } from './contracts'
 
 const DEFAULT_HISTORY_LIMIT = 10
 const dbLogger = createLogger({ service: '@vto/db-in-memory' })
@@ -28,15 +33,30 @@ export class InMemoryDbGateway implements DbGateway {
   private readonly jobs = new Map<string, TryOnJob>()
   private readonly idempotency = new Map<string, string>()
   private readonly creditEvents: CreditEventInput[] = []
+  private readonly jobEvents: TryOnJobEventInput[] = []
 
   constructor(options: InMemoryDbOptions = {}) {
     for (const tenant of options.seedTenants ?? []) {
       this.tenants.set(tenant.tenantId, tenant)
       this.keyToTenant.set(tenant.apiKey, tenant.tenantId)
+      if (tenant.credits > 0) {
+        this.creditEvents.push({
+          amountCredits: tenant.credits,
+          eventType: 'topup',
+          metadata: { source: 'seed' },
+          tenantId: tenant.tenantId,
+        })
+      }
     }
     dbLogger.info('In-memory db initialized', {
       seeded_tenants: options.seedTenants?.length ?? 0,
     })
+  }
+
+  private creditBalanceForTenant(tenantId: string): number {
+    return this.creditEvents
+      .filter((event) => event.tenantId === tenantId)
+      .reduce((total, event) => total + event.amountCredits, 0)
   }
 
   validateApiKey(apiKey: string): Promise<{ tenantId: string; shopDomain: string } | null> {
@@ -62,25 +82,90 @@ export class InMemoryDbGateway implements DbGateway {
   }
 
   hasCredits(tenantId: string): Promise<boolean> {
-    const tenant = this.tenants.get(tenantId)
-    return Promise.resolve(Boolean(tenant && tenant.credits > 0))
+    return Promise.resolve(this.creditBalanceForTenant(tenantId) > 0)
   }
 
-  reserveCredit(tenantId: string): Promise<void> {
+  getCreditBalance(tenantId: string): Promise<number> {
+    return Promise.resolve(this.creditBalanceForTenant(tenantId))
+  }
+
+  getCreditSnapshot(tenantId: string): Promise<{
+    availableCredits: number
+    completedConsumedCount: number
+    failedChargedCount: number
+    inFlightReservedCount: number
+    refundedCredits: number
+    reservedOrSpentCredits: number
+  }> {
+    const tenant = this.tenants.get(tenantId)
+    const availableCredits = this.creditBalanceForTenant(tenantId)
+    const tenantJobs = tenant
+      ? [...this.jobs.values()].filter((job) => job.shop_domain === tenant.shopDomain)
+      : []
+
+    const inFlightReservedCount = tenantJobs.filter(
+      (job) => (job.status === 'queued' || job.status === 'processing') && job.credits_charged > 0,
+    ).length
+    const completedConsumedCount = tenantJobs.filter(
+      (job) => job.status === 'completed' && job.credits_charged > 0,
+    ).length
+    const failedChargedCount = tenantJobs.filter(
+      (job) =>
+        (job.status === 'failed' || job.status === 'provider_expired') && job.credits_charged > 0,
+    ).length
+
+    const refundedCredits = this.creditEvents
+      .filter((event) => event.tenantId === tenantId && event.eventType === 'refund')
+      .reduce((total, event) => total + event.amountCredits, 0)
+
+    const reservedOrSpentCredits = this.creditEvents
+      .filter((event) => event.tenantId === tenantId && event.eventType === 'debit_tryon')
+      .reduce((total, event) => total + Math.abs(event.amountCredits), 0)
+
+    return Promise.resolve({
+      availableCredits,
+      completedConsumedCount,
+      failedChargedCount,
+      inFlightReservedCount,
+      refundedCredits,
+      reservedOrSpentCredits,
+    })
+  }
+
+  listTenants(): Promise<{ tenantId: string; shopDomain: string }[]> {
+    return Promise.resolve(
+      [...this.tenants.values()].map((tenant) => ({
+        shopDomain: tenant.shopDomain,
+        tenantId: tenant.tenantId,
+      })),
+    )
+  }
+
+  reserveCreditForJob(tenantId: string, jobId: string): Promise<void> {
     const tenant = this.tenants.get(tenantId)
     if (!tenant) {
       dbLogger.error('Credit reserve failed: tenant not found', { tenant_id: tenantId })
       return Promise.reject(new Error('Tenant not found'))
     }
 
-    if (tenant.credits <= 0) {
+    const currentBalance = this.creditBalanceForTenant(tenantId)
+    if (currentBalance <= 0) {
       dbLogger.warn('Credit reserve failed: no credits', { tenant_id: tenantId })
       return Promise.reject(new Error('No credits'))
     }
 
-    tenant.credits -= 1
+    this.creditEvents.push({
+      amountCredits: -1,
+      eventType: 'debit_tryon',
+      metadata: {
+        job_id: jobId,
+        source: 'reserveCreditForJob',
+      },
+      tenantId,
+    })
     dbLogger.info('Credit reserved', {
-      remaining_credits: tenant.credits,
+      job_id: jobId,
+      remaining_credits: currentBalance - 1,
       tenant_id: tenantId,
     })
     return Promise.resolve()
@@ -169,6 +254,19 @@ export class InMemoryDbGateway implements DbGateway {
     return Promise.resolve(job)
   }
 
+  recordJobEvent(input: TryOnJobEventInput): Promise<void> {
+    this.jobEvents.push({
+      ...input,
+      occurredAt: input.occurredAt ?? new Date().toISOString(),
+    })
+    dbLogger.debug('Job event recorded', {
+      event_type: input.eventType,
+      job_id: input.jobId,
+      tenant_id: input.tenantId,
+    })
+    return Promise.resolve()
+  }
+
   updateJobStatus(
     input: Parameters<DbGateway['updateJobStatus']>[0],
   ): ReturnType<DbGateway['updateJobStatus']> {
@@ -208,7 +306,7 @@ export class InMemoryDbGateway implements DbGateway {
 
     const filteredJobs = [...this.jobs.values()]
       .filter((job) => job.shop_domain === query.shop_domain)
-      .filter((job) => job.visitor_id === query.visitor_id)
+      .filter((job) => (query.visitor_id ? job.visitor_id === query.visitor_id : true))
       .filter((job) => (query.product_id ? job.product_id === query.product_id : true))
       .toSorted(byCreatedAtDesc)
 
@@ -220,7 +318,7 @@ export class InMemoryDbGateway implements DbGateway {
       product_id: query.product_id ?? null,
       shop_domain: query.shop_domain,
       total: filteredJobs.length,
-      visitor_id: query.visitor_id,
+      visitor_id: query.visitor_id ?? null,
     })
 
     return Promise.resolve({

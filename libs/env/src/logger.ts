@@ -25,6 +25,15 @@ function parseBoolean(value: string | undefined, fallback: boolean): boolean {
   return fallback
 }
 
+function normalizeOptionalString(value: string | undefined): string | undefined {
+  if (!value) {
+    return undefined
+  }
+
+  const normalized = value.trim()
+  return normalized.length > 0 ? normalized : undefined
+}
+
 export const loggerEnvSchema = z.object({
   AXIOM_DATASET: z.string().min(1).optional(),
   AXIOM_TOKEN: z.string().min(1).optional(),
@@ -46,16 +55,25 @@ export function parseLoggerEnv(source?: EnvSource): LoggerEnv {
     resolveEnvValue(env, 'NODE_ENV', { aliases: commonAliases('NODE_ENV') }) ??
     resolveEnvValue(env, 'MODE', { aliases: commonAliases('MODE') }) ??
     'development'
+  const logLevel = normalizeOptionalString(
+    resolveEnvValue(env, 'LOG_LEVEL', {
+      aliases: commonAliases('LOG_LEVEL'),
+    }),
+  )
 
   const isProduction = nodeEnv === 'production'
 
   return parseWithSchema(loggerEnvSchema, {
-    AXIOM_DATASET: resolveEnvValue(env, 'AXIOM_DATASET', {
-      aliases: commonAliases('AXIOM_DATASET'),
-    }),
-    AXIOM_TOKEN: resolveEnvValue(env, 'AXIOM_TOKEN', {
-      aliases: commonAliases('AXIOM_TOKEN'),
-    }),
+    AXIOM_DATASET: normalizeOptionalString(
+      resolveEnvValue(env, 'AXIOM_DATASET', {
+        aliases: commonAliases('AXIOM_DATASET'),
+      }),
+    ),
+    AXIOM_TOKEN: normalizeOptionalString(
+      resolveEnvValue(env, 'AXIOM_TOKEN', {
+        aliases: commonAliases('AXIOM_TOKEN'),
+      }),
+    ),
     LOG_ENABLE_AXIOM: parseBoolean(
       resolveEnvValue(env, 'LOG_ENABLE_AXIOM', {
         aliases: commonAliases('LOG_ENABLE_AXIOM'),
@@ -74,12 +92,12 @@ export function parseLoggerEnv(source?: EnvSource): LoggerEnv {
       }),
       isProduction,
     ),
-    LOG_LEVEL: resolveEnvValue(env, 'LOG_LEVEL', {
-      aliases: commonAliases('LOG_LEVEL'),
-    }),
+    LOG_LEVEL: logLevel,
     NODE_ENV: nodeEnv,
-    SENTRY_DSN: resolveEnvValue(env, 'SENTRY_DSN', {
-      aliases: commonAliases('SENTRY_DSN'),
-    }),
+    SENTRY_DSN: normalizeOptionalString(
+      resolveEnvValue(env, 'SENTRY_DSN', {
+        aliases: commonAliases('SENTRY_DSN'),
+      }),
+    ),
   })
 }

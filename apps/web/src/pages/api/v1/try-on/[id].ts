@@ -32,10 +32,9 @@ async function getAuthorizedJob(
   return runtime.tryOnGateway.getJobStatus(id, authResult)
 }
 
-export const GET: APIRoute = async (context) => {
+function setupRequest(context: Parameters<APIRoute>[0]) {
   const bindings = (context.locals as { runtime?: { env?: Record<string, unknown> } }).runtime?.env
   configureRuntimeBindings(bindings)
-
   const request_id = requestId(context)
   const { id } = context.params
   const requestLogger = runtime.logger.child({
@@ -43,6 +42,11 @@ export const GET: APIRoute = async (context) => {
     path: '/api/v1/try-on/:id',
     request_id,
   })
+  return { id, requestLogger, request_id }
+}
+
+export const GET: APIRoute = async (context) => {
+  const { id, requestLogger, request_id } = setupRequest(context)
   requestLogger.info('Try-on status request received')
 
   if (!id) {
@@ -64,6 +68,8 @@ export const GET: APIRoute = async (context) => {
   }
 
   requestLogger.debug('Try-on status request resolved', {
+    provider_job_id: job.provider_job_id ?? null,
+    result_url: job.result_url ?? null,
     status: job.status,
   })
   return json({

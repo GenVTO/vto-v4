@@ -15,7 +15,6 @@
     "@vto/env": "workspace:*",
     "@vto/logger": "workspace:*",
     "@vto/request": "workspace:*",
-    "@vto/try-on": "workspace:*",
     "@vto/types": "workspace:*",
     "zod": "4.3.6"
   }

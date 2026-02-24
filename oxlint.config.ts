@@ -30,6 +30,7 @@ export default defineConfig({
     '.astro',
     '.trae',
     '.agent',
+    'generated',
   ],
   overrides: [
     {
@@ -40,6 +41,7 @@ export default defineConfig({
       plugins: ['vitest'],
       rules: {
         'id-length': 'off',
+        'import/no-nodejs-modules': 'off',
         'init-declarations': 'off',
         'max-lines': 'off',
         'max-lines-per-function': 'off',
@@ -47,7 +49,6 @@ export default defineConfig({
         'no-explicit-any': 'off',
         'no-magic-numbers': 'off',
         'prefer-destructuring': 'off',
-        'require-await': 'off',
         'typescript/consistent-type-imports': 'off',
         'typescript/no-explicit-any': 'off',
         'vitest/prefer-called-once': 'off',
@@ -170,6 +171,7 @@ export default defineConfig({
     ],
     'no-ternary': 'allow',
     'prefer-default-export': 'off',
+    'require-await': 'off',
     'sort-imports': 'off',
     'typescript/no-explicit-any': 'warn',
     'typescript/no-unused-vars': 'warn',

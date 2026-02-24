@@ -9,6 +9,7 @@ ignoredBuiltDependencies:
 
 onlyBuiltDependencies:
   - esbuild
+  - supabase
   - workerd
 
 shamefullyHoist: true

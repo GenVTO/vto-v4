@@ -25,6 +25,14 @@ export interface CreateTryOnResponse {
   result_url?: string | null
 }
 
+export interface TryOnJobEvent {
+  id: string
+  job_id: string
+  event_type: string
+  metadata?: Record<string, unknown>
+  occurred_at: string
+}
+
 export interface TryOnJob {
   id: string
   shop_domain: string
@@ -40,6 +48,7 @@ export interface TryOnJob {
   provider_job_id?: string | null
   created_at: string
   updated_at: string
+  events?: TryOnJobEvent[]
 }
 
 export interface TryOnHistoryResponse {
@@ -51,7 +60,7 @@ export interface TryOnHistoryResponse {
 
 export interface TryOnHistoryQuery {
   shop_domain: string
-  visitor_id: string
+  visitor_id?: string
   product_id?: string
   limit?: number
   offset?: number

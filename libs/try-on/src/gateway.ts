@@ -1,18 +1,28 @@
-import type { DbGateway } from '@vto/db/contracts'
-import type { CreateTryOnRequest, CreateTryOnResponse, TryOnJob, TryOnModel } from '@vto/types'
+import type {
+  CreateTryOnRequest,
+  CreateTryOnResponse,
+  DbGateway,
+  StorageGateway,
+  TryOnJobEventType,
+  TryOnJob,
+  TryOnModel,
+  TryOnProvider,
+  TryOnProviderSubmitResult,
+} from '@vto/types'
 
 import { createLogger } from '@vto/logger'
 
-import type {
-  CreateTryOnGatewayOptions,
-  RunTryOnContext,
-  TryOnGateway,
-  TryOnProvider,
-  TryOnProviderSubmitResult,
-} from './contracts'
+import type { CreateTryOnGatewayOptions, RunTryOnContext, TryOnGateway } from './contracts'
 
 import { TryOnGatewayError } from './error'
-import { getPersonImageRef, polledJobStatus, providerByName, sha256Hex } from './helpers'
+import {
+  decodeProviderJobRef,
+  encodeProviderJobRef,
+  getPersonImageRef,
+  polledJobStatus,
+  providerByName,
+  sha256Hex,
+} from './helpers'
 
 const DEFAULT_HISTORY_LIMIT = 10
 const DEFAULT_HISTORY_OFFSET = 0
@@ -27,11 +37,83 @@ interface CachedLookupInput {
 
 interface ProviderSubmitContext {
   db: DbGateway
+  storage: StorageGateway
+  job: TryOnJob
   input: CreateTryOnRequest
   context: RunTryOnContext
-  userImageHash: string
-  modelProviderMap: Record<TryOnModel, string>
+  modelProviderMap?: Record<TryOnModel, string>
+  modelProviderOrderMap?: Partial<Record<TryOnModel, string[]>>
   providers: Record<string, TryOnProvider>
+}
+
+interface InternalTryOnMetadata {
+  api_request_received_at?: string
+  image_upload_completed_at?: string
+  product_image_key?: string
+  user_image_key?: string
+}
+
+function extractInternalMetadata(metadata: CreateTryOnRequest['metadata']): InternalTryOnMetadata {
+  const internal = metadata?.__vto_internal
+  if (!internal || typeof internal !== 'object' || Array.isArray(internal)) {
+    return {}
+  }
+
+  return internal as InternalTryOnMetadata
+}
+
+function toProviderParams(
+  metadata: CreateTryOnRequest['metadata'],
+): Record<string, unknown> | undefined {
+  if (!metadata) {
+    return undefined
+  }
+
+  const { __vto_internal, ...providerParams } = metadata
+  return Object.keys(providerParams).length > 0 ? providerParams : undefined
+}
+
+async function recordJobEventSafe(input: {
+  db: DbGateway
+  tenantId: string
+  jobId: string
+  eventType: TryOnJobEventType
+  metadata?: Record<string, unknown>
+  occurredAt?: string
+}): Promise<void> {
+  try {
+    await input.db.recordJobEvent({
+      eventType: input.eventType,
+      jobId: input.jobId,
+      metadata: input.metadata,
+      occurredAt: input.occurredAt,
+      tenantId: input.tenantId,
+    })
+  } catch (error) {
+    tryOnLogger.warn('Failed to record try-on job event', {
+      error: error instanceof Error ? error.message : String(error),
+      event_type: input.eventType,
+      job_id: input.jobId,
+      tenant_id: input.tenantId,
+    })
+  }
+}
+
+function resolveProviderOrder(
+  model: TryOnModel,
+  providers: Record<string, TryOnProvider>,
+  modelProviderMap: ProviderSubmitContext['modelProviderMap'],
+  modelProviderOrderMap: ProviderSubmitContext['modelProviderOrderMap'],
+): string[] {
+  const explicitOrder = modelProviderOrderMap?.[model] ?? []
+  const mappedProvider = modelProviderMap?.[model]
+  const baseOrder = [...explicitOrder, ...(mappedProvider ? [mappedProvider] : [])]
+
+  if (baseOrder.length > 0) {
+    return [...new Set(baseOrder)]
+  }
+
+  return Object.keys(providers)
 }
 
 function assertTenantShopMatch(inputShopDomain: string, contextShopDomain: string): void {
@@ -112,102 +194,194 @@ async function cachedOrIdempotentJob(
   return cachedResponse(input)
 }
 
-async function createProviderJob(
-  input: ProviderSubmitContext,
-): Promise<{ job: TryOnJob; submitResult: TryOnProviderSubmitResult }> {
+async function createProviderJob(input: ProviderSubmitContext): Promise<TryOnProviderSubmitResult> {
   const model = input.input.model ?? 'advanced'
-  const providerName = input.modelProviderMap[model]
-  const provider = providerByName(input.providers, providerName)
+  const providerOrder = resolveProviderOrder(
+    model,
+    input.providers,
+    input.modelProviderMap,
+    input.modelProviderOrderMap,
+  )
   tryOnLogger.debug('Creating provider job', {
     model,
-    provider: providerName,
+    providers: providerOrder,
     shop_domain: input.input.shop_domain,
     tenant_id: input.context.tenantId,
   })
 
-  const job = await input.db.createJob({
-    ...input.input,
-    model,
-    tenantId: input.context.tenantId,
-    userImageHash: input.userImageHash,
-  })
+  const submitErrors: string[] = []
+  for (const providerName of providerOrder) {
+    const provider = providerByName(input.providers, providerName)
+    if (!provider) {
+      submitErrors.push(`Provider ${providerName} not configured`)
+      continue
+    }
 
-  if (!provider) {
-    await input.db.updateJobStatus({
-      errorCode: 'PROVIDER_FAILED',
-      errorMessage: `Provider not configured for model ${model}.`,
-      jobId: job.id,
-      status: 'failed',
-    })
-
-    throw new TryOnGatewayError('PROVIDER_FAILED', 'No provider configured for model.', { model })
+    try {
+      const providerPayload = {
+        model,
+        params: toProviderParams(input.input.metadata),
+        personImageUrl: getPersonImageRef(input.input),
+        productImageUrl: input.input.product_image_url,
+      }
+      await recordJobEventSafe({
+        db: input.db,
+        eventType: 'provider_submit_started',
+        jobId: input.job.id,
+        metadata: {
+          model,
+          provider: providerName,
+        },
+        tenantId: input.context.tenantId,
+      })
+      tryOnLogger.info('Submitting provider request', {
+        job_id: input.job.id,
+        provider: providerName,
+        request: providerPayload,
+      })
+      const submitResult = await provider.submit({
+        model: providerPayload.model,
+        params: providerPayload.params,
+        personImageUrl: providerPayload.personImageUrl,
+        productImageUrl: providerPayload.productImageUrl,
+      })
+      tryOnLogger.info('Provider job submitted', {
+        job_id: input.job.id,
+        provider: submitResult.provider,
+        provider_job_id: submitResult.providerJobId,
+        response: submitResult,
+      })
+      await recordJobEventSafe({
+        db: input.db,
+        eventType: 'provider_submit_succeeded',
+        jobId: input.job.id,
+        metadata: {
+          provider: submitResult.provider,
+          provider_job_id: submitResult.providerJobId,
+        },
+        occurredAt: submitResult.acceptedAt,
+        tenantId: input.context.tenantId,
+      })
+      return submitResult
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      submitErrors.push(`${providerName}: ${message}`)
+      await recordJobEventSafe({
+        db: input.db,
+        eventType: 'provider_submit_failed',
+        jobId: input.job.id,
+        metadata: {
+          error: message,
+          provider: providerName,
+        },
+        tenantId: input.context.tenantId,
+      })
+      tryOnLogger.warn('Provider submit failed, trying next provider', {
+        error: message,
+        job_id: input.job.id,
+        provider: providerName,
+      })
+    }
   }
 
-  const submitResult = await provider.submit({
-    model,
-    params: input.input.metadata,
-    personImageUrl: getPersonImageRef(input.input),
-    productImageUrl: input.input.product_image_url,
-  })
-  tryOnLogger.info('Provider job submitted', {
-    job_id: job.id,
-    provider: submitResult.provider,
-    provider_job_id: submitResult.providerJobId,
+  await input.db.updateJobStatus({
+    errorCode: 'PROVIDER_FAILED',
+    errorMessage: submitErrors.join(' | ') || `Provider not configured for model ${model}.`,
+    jobId: input.job.id,
+    status: 'failed',
   })
 
-  return { job, submitResult }
+  throw new TryOnGatewayError('PROVIDER_FAILED', 'No provider available for model.', {
+    model,
+    providers: providerOrder,
+  })
 }
 
 async function submitAndCharge(input: ProviderSubmitContext): Promise<CreateTryOnResponse> {
-  const hasCredits = await input.db.hasCredits(input.context.tenantId)
-  if (!hasCredits) {
+  const creditSnapshot = await input.db.getCreditSnapshot(input.context.tenantId)
+  if (creditSnapshot.availableCredits <= 0) {
     tryOnLogger.warn('Try-on rejected due to insufficient credits', {
+      available_credits: creditSnapshot.availableCredits,
+      in_flight_reserved_count: creditSnapshot.inFlightReservedCount,
       tenant_id: input.context.tenantId,
     })
-    throw new TryOnGatewayError('INSUFFICIENT_CREDITS', 'No credits available for this tenant.')
+    throw new TryOnGatewayError('INSUFFICIENT_CREDITS', 'No credits available for this tenant.', {
+      available_credits: creditSnapshot.availableCredits,
+      in_flight_reserved_count: creditSnapshot.inFlightReservedCount,
+    })
   }
 
-  const { job, submitResult } = await createProviderJob(input)
-
-  await input.db.reserveCredit(input.context.tenantId)
-  await input.db.recordCreditEvent({
-    amountCredits: -1,
-    eventType: 'debit_tryon',
-    metadata: {
-      job_id: job.id,
-      provider: submitResult.provider,
-      provider_job_id: submitResult.providerJobId,
-    },
-    tenantId: input.context.tenantId,
+  try {
+    await input.db.reserveCreditForJob(input.context.tenantId, input.job.id)
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    if (message.toLowerCase().includes('no credits')) {
+      const latestSnapshot = await input.db.getCreditSnapshot(input.context.tenantId)
+      tryOnLogger.warn('Try-on rejected while reserving credit', {
+        available_credits: latestSnapshot.availableCredits,
+        tenant_id: input.context.tenantId,
+      })
+      throw new TryOnGatewayError('INSUFFICIENT_CREDITS', 'No credits available for this tenant.', {
+        available_credits: latestSnapshot.availableCredits,
+      })
+    }
+    throw error
+  }
+  tryOnLogger.info('Credit reserved for try-on attempt', {
+    tenant_id: input.context.tenantId,
   })
 
+  let submitResult: TryOnProviderSubmitResult
+
+  try {
+    submitResult = await createProviderJob(input)
+  } catch (error) {
+    await input.db.recordCreditEvent({
+      amountCredits: 1,
+      eventType: 'refund',
+      metadata: {
+        job_id: input.job.id,
+        reason: 'provider_submit_failed_before_accept',
+      },
+      tenantId: input.context.tenantId,
+    })
+    tryOnLogger.warn('Credit refunded after provider submit failure', {
+      tenant_id: input.context.tenantId,
+    })
+    throw error
+  }
+
   await input.db.updateJobStatus({
-    jobId: job.id,
-    providerJobId: submitResult.providerJobId,
+    jobId: input.job.id,
+    providerJobId: encodeProviderJobRef(submitResult.provider, submitResult.providerJobId),
     status: 'processing',
   })
   tryOnLogger.info('Credit charged and job moved to processing', {
-    job_id: job.id,
+    job_id: input.job.id,
     tenant_id: input.context.tenantId,
   })
 
   if (input.input.idempotency_key) {
-    await input.db.saveJobIdempotency(input.context.tenantId, input.input.idempotency_key, job.id)
+    await input.db.saveJobIdempotency(
+      input.context.tenantId,
+      input.input.idempotency_key,
+      input.job.id,
+    )
   }
 
   return {
     cache_hit: false,
     credits_charged: 1,
-    job_id: job.id,
+    job_id: input.job.id,
     result_url: null,
     status: 'processing',
   }
 }
 
 export function createTryOnGateway(options: CreateTryOnGatewayOptions): TryOnGateway {
-  const { db, modelProviderMap, providers } = options
+  const { db, modelProviderMap, modelProviderOrderMap, providers, storage } = options
   tryOnLogger.info('Try-on gateway initialized', {
-    models: Object.keys(modelProviderMap),
+    models: Object.keys(modelProviderMap ?? modelProviderOrderMap ?? {}),
     providers: Object.keys(providers),
   })
 
@@ -244,7 +418,39 @@ export function createTryOnGateway(options: CreateTryOnGatewayOptions): TryOnGat
         provider_job_id: job.provider_job_id,
         status: job.status,
       })
-      return polledJobStatus({ db, job, modelProviderMap, providers })
+      const providerRef = decodeProviderJobRef(job.provider_job_id)
+      const resolved = await polledJobStatus({
+        db,
+        job: {
+          ...job,
+          provider_job_id: providerRef.providerJobId || null,
+        },
+        modelProviderMap,
+        modelProviderOrderMap,
+        providers,
+        selectedProviderName: providerRef.providerName,
+        storage,
+        tenantId: context.tenantId,
+      })
+      if (resolved) {
+        await recordJobEventSafe({
+          db,
+          eventType: 'job_status_updated',
+          jobId: resolved.id,
+          metadata: { status: resolved.status },
+          tenantId: context.tenantId,
+        })
+        if (resolved.status === 'completed' && resolved.result_url) {
+          await recordJobEventSafe({
+            db,
+            eventType: 'result_delivered_to_client',
+            jobId: resolved.id,
+            metadata: { result_url: resolved.result_url },
+            tenantId: context.tenantId,
+          })
+        }
+      }
+      return resolved
     },
 
     async runTryOn(input, context) {
@@ -274,13 +480,43 @@ export function createTryOnGateway(options: CreateTryOnGatewayOptions): TryOnGat
         return existingResult
       }
 
+      const job = await db.createJob({
+        ...input,
+        model: input.model ?? 'advanced',
+        tenantId: context.tenantId,
+        userImageHash,
+      })
+      const internalMetadata = extractInternalMetadata(input.metadata)
+      await recordJobEventSafe({
+        db,
+        eventType: 'api_request_received',
+        jobId: job.id,
+        occurredAt: internalMetadata.api_request_received_at,
+        tenantId: context.tenantId,
+      })
+      if (internalMetadata.image_upload_completed_at) {
+        await recordJobEventSafe({
+          db,
+          eventType: 'input_images_uploaded',
+          jobId: job.id,
+          metadata: {
+            product_image_key: internalMetadata.product_image_key ?? null,
+            user_image_key: internalMetadata.user_image_key ?? null,
+          },
+          occurredAt: internalMetadata.image_upload_completed_at,
+          tenantId: context.tenantId,
+        })
+      }
+
       return submitAndCharge({
         context,
         db,
         input,
+        job,
         modelProviderMap,
+        modelProviderOrderMap,
         providers,
-        userImageHash,
+        storage,
       })
     },
   }

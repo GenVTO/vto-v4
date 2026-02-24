@@ -4,15 +4,18 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts",
-    "./contracts": "./src/contracts.ts"
+    ".": "./src/index.ts"
   },
   "scripts": {
     "type-check": "tsc --noEmit",
     "test": "vitest run"
   },
   "dependencies": {
+    "@supabase/supabase-js": "2.97.0",
+    "@vto/env": "workspace:*",
     "@vto/logger": "workspace:*",
+    "@vto/sqlite-db": "workspace:*",
+    "@vto/supabase-db": "workspace:*",
     "@vto/types": "workspace:*"
   }
 }

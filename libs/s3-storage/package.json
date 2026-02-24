@@ -1,0 +1,20 @@
+{
+  "name": "@vto/s3-storage",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "3.996.0",
+    "@aws-sdk/s3-request-presigner": "3.996.0",
+    "@vto/env": "workspace:*",
+    "@vto/logger": "workspace:*",
+    "@vto/types": "workspace:*"
+  }
+}

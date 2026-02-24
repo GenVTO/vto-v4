@@ -1,20 +1,9 @@
 import { useState } from 'react'
 
+import type { OptimizedImagePayload } from './ImageUpload'
 import type { LogEntry } from './LogViewer'
 
-const API_KEY = 'dev_vto_api_key'
-const SHOP_DOMAIN = 'demo-shop.myshopify.com'
 const POLL_INTERVAL = 2000
-
-interface TryOnPayload {
-  api_key: string
-  model: string
-  product_id: string
-  product_image_url: string
-  shop_domain: string
-  user_image: string
-  visitor_id: string
-}
 
 interface StatusResponse {
   status: string
@@ -25,30 +14,53 @@ interface JobResponse {
   job_id: string
 }
 
+export interface TryOnShopContext {
+  apiKey: string
+  shopDomain: string
+  tenantId: string
+}
+
 interface JobActions {
   addLog: (message: string, type?: LogEntry['type']) => void
   setIsLoading: (loading: boolean) => void
   setResultUrl: (url: string | null) => void
 }
 
-function createPayload(userImage: string, productImage: string, model: string): TryOnPayload {
-  return {
-    api_key: API_KEY,
-    model,
-    product_id: `prod_${Date.now()}`,
-    product_image_url: productImage,
-    shop_domain: SHOP_DOMAIN,
-    user_image: userImage,
-    visitor_id: `visitor_${Date.now()}`,
+function summarizeFormData(form: FormData): string {
+  const entries: string[] = []
+  for (const [key, value] of form.entries()) {
+    if (value instanceof File) {
+      entries.push(`${key}=File(name=${value.name},type=${value.type || 'n/a'},size=${value.size})`)
+    } else {
+      const strVal = String(value)
+      const displayVal = strVal.length > 100 ? `${strVal.slice(0, 100)}...` : strVal
+      entries.push(`${key}=${displayVal}`)
+    }
   }
+  return entries.join(' | ')
 }
 
-async function postJob(payload: TryOnPayload): Promise<JobResponse> {
+function createPayload(
+  userImage: OptimizedImagePayload,
+  productImage: OptimizedImagePayload,
+  model: string,
+  context: TryOnShopContext,
+): FormData {
+  const form = new FormData()
+  form.set('model', model)
+  form.set('product_id', `prod_${context.tenantId}_${Date.now()}`)
+  form.set('shop_domain', context.shopDomain)
+  form.set('visitor_id', `visitor_${context.tenantId}_${Date.now()}`)
+  form.set('user_image', userImage.file, userImage.file.name)
+  form.set('product_image', productImage.file, productImage.file.name)
+  return form
+}
+
+async function postJob(payload: FormData, apiKey: string): Promise<JobResponse> {
   const res = await fetch('/api/v1/try-on', {
-    body: JSON.stringify(payload),
+    body: payload,
     headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': API_KEY,
+      'x-api-key': apiKey,
     },
     method: 'POST',
   })
@@ -63,6 +75,7 @@ async function postJob(payload: TryOnPayload): Promise<JobResponse> {
 
 function handleCompletion(url: string | undefined, actions: JobActions) {
   actions.addLog('Current status: completed', 'success')
+  actions.addLog(`Final result URL (platform): ${url ?? 'null'}`)
   actions.addLog('Job completed successfully!', 'success')
   actions.setResultUrl(url ?? null)
   actions.setIsLoading(false)
@@ -106,20 +119,25 @@ export function useTryOnJob() {
 
   const actions: JobActions = { addLog, setIsLoading, setResultUrl }
 
-  const pollStatus = (id: string) => {
+  const pollStatus = (id: string, context: TryOnShopContext) => {
     addLog(`Polling status for job ${id}...`)
 
     const check = async () => {
       try {
+        const pollPath = `/api/v1/try-on/${id}`
+        addLog(`Polling request -> GET ${pollPath}`)
         const res = await fetch(`/api/v1/try-on/${id}`, {
-          headers: { 'x-api-key': API_KEY },
+          headers: { 'x-api-key': context.apiKey },
         })
+
+        const raw = await res.text()
+        addLog(`Polling response <- ${res.status} ${raw}`)
 
         if (!res.ok) {
           throw new Error(`Status check failed: ${res.status}`)
         }
 
-        const data = await res.json()
+        const data = JSON.parse(raw) as StatusResponse
         handleStatusResponse(data, check, actions)
       } catch (error) {
         addLog(`Polling error: ${error instanceof Error ? error.message : String(error)}`, 'error')
@@ -137,15 +155,22 @@ export function useTryOnJob() {
     addLog('Submitting job request...')
   }
 
-  const submitJob = async (userImage: string, productImage: string, model: string) => {
+  const submitJob = async (
+    userImage: OptimizedImagePayload,
+    productImage: OptimizedImagePayload,
+    model: string,
+    context: TryOnShopContext,
+  ) => {
     initJob()
 
     try {
-      const payload = createPayload(userImage, productImage, model)
-      const data = await postJob(payload)
+      const payload = createPayload(userImage, productImage, model, context)
+      addLog(`Create request -> POST /api/v1/try-on | ${summarizeFormData(payload)}`)
+      const data = await postJob(payload, context.apiKey)
+      addLog(`Create response <- ${JSON.stringify(data)}`)
 
       addLog(`Job created with ID: ${data.job_id}`, 'success')
-      pollStatus(data.job_id)
+      pollStatus(data.job_id, context)
     } catch (error) {
       addLog(`Error: ${error instanceof Error ? error.message : String(error)}`, 'error')
       setIsLoading(false)

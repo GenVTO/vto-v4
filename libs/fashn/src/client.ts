@@ -1,4 +1,4 @@
-import type { TryOnProviderStatusResult } from '@vto/try-on/contracts'
+import type { TryOnProviderStatusResult } from '@vto/types'
 
 import { parseFashnEnv } from '@vto/env/fashn'
 import { createLogger } from '@vto/logger'
@@ -211,8 +211,13 @@ export class FashnApiClient implements FashnClient {
 
     const parsed = fashnRunResponseSchema.safeParse(rawResponse)
     if (!parsed.success) {
-      throw new RequestError('Fashn run response is invalid.', null, null, {
-        issues: parsed.error.issues,
+      throw new RequestError({
+        details: {
+          issues: parsed.error.issues,
+        },
+        message: 'Fashn run response is invalid.',
+        statusCode: null,
+        statusName: null,
       })
     }
 

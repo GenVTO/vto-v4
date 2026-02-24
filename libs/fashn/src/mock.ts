@@ -1,4 +1,4 @@
-import type { TryOnProviderStatusResult } from '@vto/try-on/contracts'
+import type { TryOnProviderStatusResult } from '@vto/types'
 
 import { createLogger } from '@vto/logger'
 

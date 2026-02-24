@@ -1,43 +1,40 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
-import type { CreditEventInput, CreateJobInput, DbGateway } from '@vto/db/contracts'
-import type { TryOnHistoryQuery, TryOnJob } from '@vto/types'
+import type {
+  CreateJobInput,
+  CreditEventInput,
+  CreditSnapshot,
+  DbGateway,
+  TryOnJobEventInput,
+  TryOnHistoryQuery,
+  TryOnJob,
+} from '@vto/types'
 
 import { createLogger } from '@vto/logger'
+
+import type { ApiKeyRow as ApiKeyTableRow, TenantRow, TryOnJobRow } from './types'
 
 export interface SupabaseDbOptions {
   schema?: string
 }
 
-interface ApiKeyRow {
-  tenant_id: string
-  is_active: boolean
+interface ApiKeyValidationRow extends Pick<ApiKeyTableRow, 'is_active' | 'tenant_id'> {
   tenants: { shop_domain: string } | { shop_domain: string }[] | null
 }
 
-interface CreditLedgerRow {
-  amount_credits: number
-}
-
-interface TryOnJobRow {
-  id: string
-  shop_domain: string
-  product_id: string
-  shopify_product_handle: string | null
-  visitor_id: string
-  customer_id: string | null
-  model: 'normal' | 'advanced'
-  status: TryOnJob['status']
-  result_url: string | null
-  user_image_hash: string
-  credits_charged: number
-  provider_job_id: string | null
-  created_at: string
-  updated_at: string
+interface CreditSnapshotRow {
+  available_credits: number
+  completed_consumed_count: number
+  failed_charged_count: number
+  in_flight_reserved_count: number
+  refunded_credits: number
+  reserved_or_spent_credits: number
 }
 
 const supabaseDbLogger = createLogger({ service: '@vto/supabase-db' })
 
-function toTenantsRelation(relation: ApiKeyRow['tenants']): { shop_domain: string } | null {
+function toTenantsRelation(
+  relation: ApiKeyValidationRow['tenants'],
+): { shop_domain: string } | null {
   if (!relation) {
     return null
   }
@@ -85,7 +82,7 @@ export class SupabaseDbGateway implements DbGateway {
       .select('tenant_id,is_active,tenants(shop_domain)')
       .eq('key_hash', apiKey)
       .eq('is_active', true)
-      .maybeSingle<ApiKeyRow>()
+      .maybeSingle<ApiKeyValidationRow>()
 
     if (error) {
       supabaseDbLogger.error('validateApiKey failed', { message: error.message })
@@ -108,35 +105,90 @@ export class SupabaseDbGateway implements DbGateway {
   }
 
   async hasCredits(tenantId: string): Promise<boolean> {
-    const { data, error } = await this.from('credit_ledgers')
-      .select('amount_credits')
+    return (await this.getCreditBalance(tenantId)) > 0
+  }
+
+  async getCreditBalance(tenantId: string): Promise<number> {
+    const snapshot = await this.getCreditSnapshot(tenantId)
+    return snapshot.availableCredits
+  }
+
+  async getCreditSnapshot(tenantId: string): Promise<CreditSnapshot> {
+    const { data, error } = await this.from('tenant_credit_snapshot_v')
+      .select('*')
       .eq('tenant_id', tenantId)
-      .returns<CreditLedgerRow[]>()
+      .maybeSingle<CreditSnapshotRow>()
 
     if (error) {
-      supabaseDbLogger.error('hasCredits failed', { message: error.message, tenant_id: tenantId })
+      if (error.message.includes('tenant_credit_snapshot_v')) {
+        const { data: ledgerData, error: ledgerError } = await this.from('credit_ledgers')
+          .select('amount_credits')
+          .eq('tenant_id', tenantId)
+          .returns<{ amount_credits: number }[]>()
+
+        if (ledgerError) {
+          supabaseDbLogger.error('getCreditSnapshot fallback failed', {
+            message: ledgerError.message,
+            tenant_id: tenantId,
+          })
+          throw new Error(ledgerError.message)
+        }
+
+        return {
+          availableCredits: (ledgerData ?? []).reduce((sum, row) => sum + row.amount_credits, 0),
+          completedConsumedCount: 0,
+          failedChargedCount: 0,
+          inFlightReservedCount: 0,
+          refundedCredits: 0,
+          reservedOrSpentCredits: 0,
+        }
+      }
+      supabaseDbLogger.error('getCreditSnapshot failed', {
+        message: error.message,
+        tenant_id: tenantId,
+      })
       throw new Error(error.message)
     }
 
-    const total = (data ?? []).reduce((sum, row) => sum + row.amount_credits, 0)
-    return total > 0
+    return {
+      availableCredits: data?.available_credits ?? 0,
+      completedConsumedCount: data?.completed_consumed_count ?? 0,
+      failedChargedCount: data?.failed_charged_count ?? 0,
+      inFlightReservedCount: data?.in_flight_reserved_count ?? 0,
+      refundedCredits: data?.refunded_credits ?? 0,
+      reservedOrSpentCredits: data?.reserved_or_spent_credits ?? 0,
+    }
   }
 
-  async reserveCredit(tenantId: string): Promise<void> {
-    const hasCredits = await this.hasCredits(tenantId)
-    if (!hasCredits) {
-      throw new Error('No credits')
+  async listTenants(): Promise<{ tenantId: string; shopDomain: string }[]> {
+    const { data, error } = await this.from('tenants')
+      .select('id,shop_domain')
+      .order('created_at', { ascending: false })
+      .returns<TenantRow[]>()
+
+    if (error) {
+      supabaseDbLogger.error('listTenants failed', { message: error.message })
+      throw new Error(error.message)
     }
 
-    const { error } = await this.from('credit_ledgers').insert({
-      amount_credits: -1,
-      event_type: 'debit_tryon',
-      metadata: { source: 'reserveCredit' },
-      tenant_id: tenantId,
+    return (data ?? []).map((tenant) => ({
+      shopDomain: tenant.shop_domain,
+      tenantId: tenant.id,
+    }))
+  }
+
+  async reserveCreditForJob(tenantId: string, jobId: string): Promise<void> {
+    const { error } = await this.client.rpc('reserve_credit_for_job', {
+      p_job_id: jobId,
+      p_tenant_id: tenantId,
     })
 
     if (error) {
-      supabaseDbLogger.error('reserveCredit failed', {
+      if (error.message.includes('NO_CREDITS')) {
+        throw new Error('No credits')
+      }
+      supabaseDbLogger.error('reserveCreditForJob failed', {
+        job_id: jobId,
         message: error.message,
         tenant_id: tenantId,
       })
@@ -244,14 +296,28 @@ export class SupabaseDbGateway implements DbGateway {
     return this.toTryOnJob(data)
   }
 
-  async updateJobStatus(input: {
-    jobId: string
+  async recordJobEvent(input: TryOnJobEventInput): Promise<void> {
+    const { error } = await this.from('tryon_job_events').insert({
+      event_type: input.eventType,
+      job_id: input.jobId,
+      metadata: input.metadata ?? {},
+      occurred_at: input.occurredAt ?? new Date().toISOString(),
+      tenant_id: input.tenantId,
+    })
+
+    if (error) {
+      supabaseDbLogger.error('recordJobEvent failed', { message: error.message })
+      throw new Error(error.message)
+    }
+  }
+
+  private buildUpdatePayload(input: {
     status: TryOnJob['status']
     providerJobId?: string
     resultUrl?: string
     errorCode?: string
     errorMessage?: string
-  }): Promise<void> {
+  }): Record<string, unknown> {
     const updates: Record<string, unknown> = {
       status: input.status,
       updated_at: new Date().toISOString(),
@@ -270,6 +336,19 @@ export class SupabaseDbGateway implements DbGateway {
     if (input.errorMessage !== undefined) {
       updates.failure_reason_message = input.errorMessage
     }
+
+    return updates
+  }
+
+  async updateJobStatus(input: {
+    jobId: string
+    status: TryOnJob['status']
+    providerJobId?: string
+    resultUrl?: string
+    errorCode?: string
+    errorMessage?: string
+  }): Promise<void> {
+    const updates = this.buildUpdatePayload(input)
 
     const { error } = await this.from('tryon_jobs').update(updates).eq('id', input.jobId)
 
@@ -293,26 +372,35 @@ export class SupabaseDbGateway implements DbGateway {
     return data ? this.toTryOnJob(data) : null
   }
 
-  async getHistory(query: TryOnHistoryQuery): Promise<{ items: TryOnJob[]; total: number }> {
+  private buildHistoryQueries(query: TryOnHistoryQuery) {
     const limit = query.limit ?? 10
     const offset = query.offset ?? 0
 
     let countQuery = this.from('tryon_jobs')
       .select('*', { count: 'exact', head: true })
       .eq('shop_domain', query.shop_domain)
-      .eq('visitor_id', query.visitor_id)
 
     let itemsQuery = this.from('tryon_jobs')
       .select('*')
       .eq('shop_domain', query.shop_domain)
-      .eq('visitor_id', query.visitor_id)
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1)
+
+    if (query.visitor_id) {
+      countQuery = countQuery.eq('visitor_id', query.visitor_id)
+      itemsQuery = itemsQuery.eq('visitor_id', query.visitor_id)
+    }
 
     if (query.product_id) {
       countQuery = countQuery.eq('product_id', query.product_id)
       itemsQuery = itemsQuery.eq('product_id', query.product_id)
     }
+
+    return { countQuery, itemsQuery }
+  }
+
+  async getHistory(query: TryOnHistoryQuery): Promise<{ items: TryOnJob[]; total: number }> {
+    const { countQuery, itemsQuery } = this.buildHistoryQueries(query)
 
     const [{ count, error: countError }, { data, error: itemsError }] = await Promise.all([
       countQuery,
@@ -326,8 +414,36 @@ export class SupabaseDbGateway implements DbGateway {
       throw new Error(itemsError.message)
     }
 
+    const items = (data ?? []).map((row) => this.toTryOnJob(row))
+    const jobIds = items.map((job) => job.id)
+
+    if (jobIds.length > 0) {
+      const { data: eventsData, error: eventsError } = await this.from('tryon_job_events')
+        .select('*')
+        .in('job_id', jobIds)
+        .order('occurred_at', { ascending: true })
+
+      if (eventsError) {
+        supabaseDbLogger.warn('Failed to fetch job events for history', {
+          error: eventsError.message,
+        })
+      } else {
+        const eventsByJobId = new Map<string, any[]>()
+        for (const event of eventsData ?? []) {
+          if (!eventsByJobId.has(event.job_id)) {
+            eventsByJobId.set(event.job_id, [])
+          }
+          eventsByJobId.get(event.job_id)?.push(event)
+        }
+
+        for (const item of items) {
+          item.events = eventsByJobId.get(item.id) ?? []
+        }
+      }
+    }
+
     return {
-      items: (data ?? []).map((row) => this.toTryOnJob(row)),
+      items,
       total: count ?? 0,
     }
   }

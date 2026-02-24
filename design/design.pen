@@ -1,0 +1,1915 @@
+{
+  "version": "2.8",
+  "children": [
+    {
+      "type": "frame",
+      "id": "bi8Au",
+      "x": 0,
+      "y": 0,
+      "name": "Frame",
+      "clip": true,
+      "width": 800,
+      "height": 600,
+      "fill": "#FFFFFF",
+      "layout": "none"
+    },
+    {
+      "type": "frame",
+      "id": "pGhtj",
+      "x": 880,
+      "y": 0,
+      "name": "Design System - TryOn AI",
+      "width": 1280,
+      "fill": "$bg",
+      "layout": "vertical",
+      "gap": "$spacing-28",
+      "padding": [
+        40,
+        40,
+        64,
+        40
+      ],
+      "children": [
+        {
+          "type": "frame",
+          "id": "CZWbv",
+          "name": "Header",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$spacing-12",
+          "children": [
+            {
+              "type": "text",
+              "id": "ytFNY",
+              "name": "heroTitle",
+              "fill": "$foreground",
+              "content": "TryOnAI — Design System",
+              "lineHeight": 1.05,
+              "fontFamily": "Inter",
+              "fontSize": 40,
+              "fontWeight": "$font-light",
+              "letterSpacing": -0.5
+            },
+            {
+              "type": "text",
+              "id": "uiB6y",
+              "name": "heroSub",
+              "fill": "$foreground-muted",
+              "content": "Landing page theme for an AI virtual try-on Shopify app",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "$font-regular"
+            },
+            {
+              "type": "text",
+              "id": "WRwiC",
+              "name": "heroMeta",
+              "fill": "$foreground-subtle",
+              "content": "Warm, premium, and precise — shadcn-based tokens and components",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "$font-regular"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "thp0f",
+          "name": "Color Palette",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$spacing-16",
+          "children": [
+            {
+              "type": "text",
+              "id": "4UwUx",
+              "name": "colorsTitle",
+              "fill": "$foreground",
+              "content": "Color Palette",
+              "fontFamily": "Inter",
+              "fontSize": 18,
+              "fontWeight": "$font-medium"
+            },
+            {
+              "type": "frame",
+              "id": "JIDNB",
+              "name": "row",
+              "width": "fill_container",
+              "gap": "$spacing-12",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "MWvai",
+                  "name": "sw1",
+                  "layout": "vertical",
+                  "gap": "$spacing-8",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "4CuOT",
+                      "width": 140,
+                      "height": 90,
+                      "fill": "$bg",
+                      "cornerRadius": "$radius-md",
+                      "stroke": {
+                        "thickness": 1,
+                        "fill": "$border"
+                      }
+                    },
+                    {
+                      "type": "text",
+                      "id": "2Xstv",
+                      "fill": "$foreground-muted",
+                      "content": "BG / #F7F4F0",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "$font-regular"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "TUk50",
+                  "name": "sw2",
+                  "layout": "vertical",
+                  "gap": "$spacing-8",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "otmNg",
+                      "width": 140,
+                      "height": 90,
+                      "fill": "$surface",
+                      "cornerRadius": "$radius-md",
+                      "stroke": {
+                        "thickness": 1,
+                        "fill": "$border"
+                      }
+                    },
+                    {
+                      "type": "text",
+                      "id": "2gLeh",
+                      "fill": "$foreground-muted",
+                      "content": "Surface / #FFFFFF",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "$font-regular"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "zpPoq",
+                  "name": "sw3",
+                  "layout": "vertical",
+                  "gap": "$spacing-8",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "c1nTz",
+                      "width": 140,
+                      "height": 90,
+                      "fill": "$primary",
+                      "cornerRadius": "$radius-md"
+                    },
+                    {
+                      "type": "text",
+                      "id": "hQ1L9",
+                      "fill": "$foreground-muted",
+                      "content": "Primary / #1E3A5F",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "$font-regular"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "gdAmG",
+                  "name": "sw4",
+                  "layout": "vertical",
+                  "gap": "$spacing-8",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "nQux3",
+                      "width": 140,
+                      "height": 90,
+                      "fill": "$accent",
+                      "cornerRadius": "$radius-md"
+                    },
+                    {
+                      "type": "text",
+                      "id": "8UPXw",
+                      "fill": "$foreground-muted",
+                      "content": "Accent / #2B8A6E",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "$font-regular"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "xhpHs",
+                  "name": "sw5",
+                  "layout": "vertical",
+                  "gap": "$spacing-8",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "c6tRe",
+                      "width": 140,
+                      "height": 90,
+                      "fill": "$border",
+                      "cornerRadius": "$radius-md",
+                      "stroke": {
+                        "thickness": 1,
+                        "fill": "$border-strong"
+                      }
+                    },
+                    {
+                      "type": "text",
+                      "id": "0DOJ7",
+                      "fill": "$foreground-muted",
+                      "content": "Border / #E5E0D8",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "$font-regular"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "rg313",
+                  "name": "sw6",
+                  "layout": "vertical",
+                  "gap": "$spacing-8",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "JP7i1",
+                      "width": 140,
+                      "height": 90,
+                      "fill": "$foreground",
+                      "cornerRadius": "$radius-md"
+                    },
+                    {
+                      "type": "text",
+                      "id": "7Ihfx",
+                      "fill": "$foreground-muted",
+                      "content": "Text / #1B1B1B",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "$font-regular"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "vRxdO",
+          "name": "Typography",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$spacing-16",
+          "children": [
+            {
+              "type": "text",
+              "id": "21l94",
+              "fill": "$foreground",
+              "content": "Typography",
+              "fontFamily": "Inter",
+              "fontSize": 18,
+              "fontWeight": "$font-medium"
+            },
+            {
+              "type": "text",
+              "id": "4mZxY",
+              "fill": "$foreground",
+              "content": "Display / 40 — Try On Looks Instantly",
+              "lineHeight": 1.05,
+              "fontFamily": "Inter",
+              "fontSize": 40,
+              "fontWeight": "$font-light",
+              "letterSpacing": -0.5
+            },
+            {
+              "type": "text",
+              "id": "Hs9wT",
+              "fill": "$foreground",
+              "content": "H1 / 32 — AI Fit, True-to-Size",
+              "fontFamily": "Inter",
+              "fontSize": 32,
+              "fontWeight": "$font-medium",
+              "letterSpacing": -0.3
+            },
+            {
+              "type": "text",
+              "id": "53sgD",
+              "fill": "$foreground",
+              "content": "H2 / 24 — Shopify-native Virtual Try-On",
+              "fontFamily": "Inter",
+              "fontSize": 24,
+              "fontWeight": "$font-medium"
+            },
+            {
+              "type": "text",
+              "id": "ZPcO3",
+              "fill": "$foreground-muted",
+              "content": "Body / 16 — Reduce returns with photorealistic try-on powered by proprietary diffusion models.",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "$font-regular"
+            },
+            {
+              "type": "text",
+              "id": "llgFn",
+              "fill": "$foreground-subtle",
+              "content": "Caption / 12 — Privacy-first, on-device face mapping, SOC2-ready.",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "$font-regular"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "1loYs",
+          "name": "Components",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$spacing-16",
+          "children": [
+            {
+              "type": "text",
+              "id": "V5kg9",
+              "fill": "$foreground",
+              "content": "Core Components (shadcn-inspired)",
+              "fontFamily": "Inter",
+              "fontSize": 18,
+              "fontWeight": "$font-medium"
+            },
+            {
+              "type": "frame",
+              "id": "HLdty",
+              "name": "compRow",
+              "width": "fill_container",
+              "gap": "$spacing-20",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "oxf0W",
+                  "name": "Button/Primary",
+                  "reusable": true,
+                  "height": 44,
+                  "fill": "$primary",
+                  "cornerRadius": "$radius-md",
+                  "gap": "$spacing-8",
+                  "padding": [
+                    12,
+                    18
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ilHmk",
+                      "fill": "$primary-foreground",
+                      "content": "Book a Demo",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "$font-medium"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "XsYb7",
+                  "name": "Button/Outline",
+                  "reusable": true,
+                  "height": 44,
+                  "fill": "$surface",
+                  "cornerRadius": "$radius-md",
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "$border-strong"
+                  },
+                  "gap": "$spacing-8",
+                  "padding": [
+                    12,
+                    18
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "xtpZj",
+                      "fill": "$foreground",
+                      "content": "See Pricing",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "$font-medium"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "64V3u",
+                  "name": "Input/Text",
+                  "reusable": true,
+                  "width": 260,
+                  "height": 44,
+                  "fill": "$surface",
+                  "cornerRadius": "$radius-md",
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "$border"
+                  },
+                  "gap": "$spacing-8",
+                  "padding": [
+                    0,
+                    16
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "cuBdc",
+                      "fill": "$foreground-subtle",
+                      "content": "Store domain",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "$font-regular"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "AoVvV",
+                  "name": "Badge/Accent",
+                  "reusable": true,
+                  "fill": "$accent-soft",
+                  "cornerRadius": 999,
+                  "padding": [
+                    4,
+                    10
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "6O90V",
+                      "fill": "$accent",
+                      "content": "Shopify Plus",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "$font-medium"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "tSDII",
+                  "name": "Card/Feature",
+                  "reusable": true,
+                  "width": 320,
+                  "fill": "$surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "$border"
+                  },
+                  "layout": "vertical",
+                  "gap": "$spacing-12",
+                  "padding": 20,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "MrgOv",
+                      "fill": "$foreground",
+                      "content": "Photorealistic Try‑On",
+                      "fontFamily": "Inter",
+                      "fontSize": 18,
+                      "fontWeight": "$font-medium"
+                    },
+                    {
+                      "type": "text",
+                      "id": "eRuyO",
+                      "fill": "$foreground-muted",
+                      "content": "AI renders apparel with accurate drape and lighting from a single product image.",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "$font-regular"
+                    },
+                    {
+                      "type": "text",
+                      "id": "ChtWX",
+                      "fill": "$accent",
+                      "content": "Avg. +18% conversion lift",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "$font-medium"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "c0oGR",
+          "name": "Landing Layout",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$spacing-16",
+          "children": [
+            {
+              "type": "text",
+              "id": "JihJd",
+              "fill": "$foreground",
+              "content": "Hero Block (Landing Page)",
+              "fontFamily": "Inter",
+              "fontSize": 18,
+              "fontWeight": "$font-medium"
+            },
+            {
+              "type": "frame",
+              "id": "JQzZn",
+              "name": "Hero",
+              "width": "fill_container",
+              "height": 420,
+              "fill": "$surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": {
+                "thickness": 1,
+                "fill": "$border"
+              },
+              "gap": "$spacing-20",
+              "padding": 32,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "HUoHR",
+                  "name": "heroLeft",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "gap": "$spacing-16",
+                  "children": [
+                    {
+                      "id": "pRxUf",
+                      "type": "ref",
+                      "ref": "AoVvV",
+                      "name": "heroBadge",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "iip2n",
+                          "fill": "$accent",
+                          "content": "Shopify App",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "$font-medium"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "HSdzG",
+                      "fill": "$foreground",
+                      "content": "Try on apparel in seconds, right on Shopify.",
+                      "fontFamily": "Inter",
+                      "fontSize": 32,
+                      "fontWeight": "$font-medium",
+                      "letterSpacing": -0.3
+                    },
+                    {
+                      "type": "text",
+                      "id": "uobQs",
+                      "fill": "$foreground-muted",
+                      "content": "Boost conversion and reduce returns with AI‑generated try‑on images that match lighting, pose, and fabric drape.",
+                      "fontFamily": "Inter",
+                      "fontSize": 16,
+                      "fontWeight": "$font-regular"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "UTHsO",
+                      "name": "ctaRow",
+                      "gap": "$spacing-12",
+                      "children": [
+                        {
+                          "id": "PTgRY",
+                          "type": "ref",
+                          "ref": "oxf0W",
+                          "name": "ctaPrimary",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "j23uo",
+                              "fill": "$primary-foreground",
+                              "content": "Install on Shopify",
+                              "fontFamily": "Inter",
+                              "fontSize": 14,
+                              "fontWeight": "$font-medium"
+                            }
+                          ]
+                        },
+                        {
+                          "id": "sipBB",
+                          "type": "ref",
+                          "ref": "XsYb7",
+                          "name": "ctaOutline",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "KysoP",
+                              "fill": "$foreground",
+                              "content": "View Demo",
+                              "fontFamily": "Inter",
+                              "fontSize": 14,
+                              "fontWeight": "$font-medium"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "noCyb",
+                  "name": "Hero Image",
+                  "width": 420,
+                  "height": "fill_container",
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "./images/generated-1771696834681.png",
+                    "mode": "fill"
+                  },
+                  "cornerRadius": "$radius-lg"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "iaaEN",
+      "x": 2373,
+      "y": 1438,
+      "name": "API Form - TryOnAI",
+      "clip": true,
+      "width": 1280,
+      "height": 900,
+      "fill": "$bg",
+      "layout": "vertical",
+      "gap": "$spacing-20",
+      "padding": [
+        32,
+        40,
+        40,
+        40
+      ],
+      "children": [
+        {
+          "type": "frame",
+          "id": "89hiV",
+          "name": "API Header",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$spacing-8",
+          "children": [
+            {
+              "type": "text",
+              "id": "xXkbZ",
+              "fill": "$foreground",
+              "content": "Probar API de Try‑On",
+              "fontFamily": "Inter",
+              "fontSize": 32,
+              "fontWeight": "$font-medium",
+              "letterSpacing": -0.3
+            },
+            {
+              "type": "text",
+              "id": "Epfz6",
+              "fill": "$foreground-muted",
+              "content": "Carga dos imagenes, elige el modelo y revisa resultados y logs en tiempo real.",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "$font-regular"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "UTdYv",
+          "name": "API Body",
+          "width": "fill_container",
+          "height": "fill_container",
+          "gap": "$spacing-20",
+          "children": [
+            {
+              "type": "frame",
+              "id": "qyJl5",
+              "name": "Form Column",
+              "width": 520,
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": "$spacing-16",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "09M3R",
+                  "name": "Request Form",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "$border"
+                  },
+                  "layout": "vertical",
+                  "gap": "$spacing-16",
+                  "padding": 20,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "VxTwj",
+                      "fill": "$foreground",
+                      "content": "Solicitud",
+                      "fontFamily": "Inter",
+                      "fontSize": 18,
+                      "fontWeight": "$font-medium"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Ko6dN",
+                      "name": "img1Label",
+                      "fill": "$foreground-subtle",
+                      "content": "Imagen 1 (producto)",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "$font-medium"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "SiYYj",
+                      "name": "Upload 1",
+                      "width": "fill_container",
+                      "height": 140,
+                      "fill": "$surface-muted",
+                      "cornerRadius": "$radius-md",
+                      "stroke": {
+                        "thickness": 1,
+                        "fill": "$border"
+                      },
+                      "layout": "vertical",
+                      "gap": "$spacing-8",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "hjhGf",
+                          "fill": "$foreground-muted",
+                          "content": "Arrastra o sube PNG/JPG",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "$font-regular"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "6qeoP",
+                      "name": "img2Label",
+                      "fill": "$foreground-subtle",
+                      "content": "Imagen 2 (modelo)",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "$font-medium"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "rBL3z",
+                      "name": "Upload 2",
+                      "width": "fill_container",
+                      "height": 140,
+                      "fill": "$surface-muted",
+                      "cornerRadius": "$radius-md",
+                      "stroke": {
+                        "thickness": 1,
+                        "fill": "$border"
+                      },
+                      "layout": "vertical",
+                      "gap": "$spacing-8",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "x8mWf",
+                          "fill": "$foreground-muted",
+                          "content": "Arrastra o sube PNG/JPG",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "$font-regular"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "N3Xjj",
+                      "name": "modelLabel",
+                      "fill": "$foreground-subtle",
+                      "content": "Modelo",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "$font-medium"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Seco8",
+                      "name": "Select",
+                      "width": "fill_container",
+                      "height": 44,
+                      "fill": "$surface",
+                      "cornerRadius": "$radius-md",
+                      "stroke": {
+                        "thickness": 1,
+                        "fill": "$border"
+                      },
+                      "padding": [
+                        0,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "qkk7H",
+                          "fill": "$foreground",
+                          "content": "TryOn‑V2",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "$font-regular"
+                        },
+                        {
+                          "type": "text",
+                          "id": "HBecB",
+                          "fill": "$foreground-subtle",
+                          "content": "▾",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "$font-regular"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "r2pKU",
+                      "type": "ref",
+                      "ref": "oxf0W",
+                      "name": "submit",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "SuK0Q",
+                          "fill": "$primary-foreground",
+                          "content": "Enviar request",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "$font-medium"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "uXxcy",
+              "name": "Result Column",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": "$spacing-16",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "q9P0Q",
+                  "name": "Result",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "$border"
+                  },
+                  "layout": "vertical",
+                  "gap": "$spacing-16",
+                  "padding": 20,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "GqHEd",
+                      "fill": "$foreground",
+                      "content": "Resultado",
+                      "fontFamily": "Inter",
+                      "fontSize": 18,
+                      "fontWeight": "$font-medium"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "PQ5Wc",
+                      "name": "Result Image",
+                      "width": "fill_container",
+                      "height": 260,
+                      "fill": "$surface-muted",
+                      "cornerRadius": "$radius-md"
+                    },
+                    {
+                      "type": "text",
+                      "id": "NlcTt",
+                      "fill": "$foreground-subtle",
+                      "content": "Status: listo · 7.8s · seed 28341",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "$font-regular"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "GtaBp",
+                  "name": "Logs",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "$border"
+                  },
+                  "layout": "vertical",
+                  "gap": "$spacing-12",
+                  "padding": 20,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "GTucA",
+                      "fill": "$foreground",
+                      "content": "Logs",
+                      "fontFamily": "Inter",
+                      "fontSize": 18,
+                      "fontWeight": "$font-medium"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "1htgR",
+                      "name": "logList",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "layout": "vertical",
+                      "gap": "$spacing-8",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "TQzRT",
+                          "fill": "$foreground-muted",
+                          "content": "[12:41:05] upload:image_1 ok",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "$font-regular"
+                        },
+                        {
+                          "type": "text",
+                          "id": "mdaxn",
+                          "fill": "$foreground-muted",
+                          "content": "[12:41:07] upload:image_2 ok",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "$font-regular"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Hd4Ff",
+                          "fill": "$foreground-muted",
+                          "content": "[12:41:10] model: tryon-v2",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "$font-regular"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Rs6jp",
+                          "fill": "$foreground-muted",
+                          "content": "[12:41:18] inference: 7.8s",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "$font-regular"
+                        },
+                        {
+                          "type": "text",
+                          "id": "7pwvJ",
+                          "fill": "$foreground-muted",
+                          "content": "[12:41:19] output: result.png",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "$font-regular"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "19lqc",
+      "x": 2264,
+      "y": -391,
+      "name": "Landing Page - TryOnAI",
+      "clip": true,
+      "width": 1280,
+      "fill": "$bg",
+      "layout": "vertical",
+      "gap": "$spacing-28",
+      "padding": [
+        40,
+        56,
+        56,
+        56
+      ],
+      "children": [
+        {
+          "type": "frame",
+          "id": "6DVvh",
+          "name": "Nav",
+          "width": "fill_container",
+          "height": 56,
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "SOH0O",
+              "name": "navLeft",
+              "height": "fill_container",
+              "gap": "$spacing-12",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "cS3Ww",
+                  "fill": "$foreground",
+                  "content": "TryOnAI",
+                  "fontFamily": "Inter",
+                  "fontSize": 18,
+                  "fontWeight": "$font-medium"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "q5Kho",
+              "name": "navLinks",
+              "height": "fill_container",
+              "gap": "$spacing-16",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "rMf7N",
+                  "fill": "$foreground-muted",
+                  "content": "Producto",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "$font-regular"
+                },
+                {
+                  "type": "text",
+                  "id": "uu9CR",
+                  "fill": "$foreground-muted",
+                  "content": "Resultados",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "$font-regular"
+                },
+                {
+                  "type": "text",
+                  "id": "YDgSu",
+                  "fill": "$foreground-muted",
+                  "content": "Integraciones",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "$font-regular"
+                }
+              ]
+            },
+            {
+              "id": "OXaBx",
+              "type": "ref",
+              "ref": "oxf0W",
+              "name": "navCta",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "EgWya",
+                  "fill": "$primary-foreground",
+                  "content": "Instalar en Shopify",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "$font-medium"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "seTEQ",
+          "name": "Hero",
+          "width": "fill_container",
+          "height": 440,
+          "fill": "$surface",
+          "cornerRadius": "$radius-lg",
+          "stroke": {
+            "thickness": 1,
+            "fill": "$border"
+          },
+          "gap": "$spacing-28",
+          "padding": 32,
+          "children": [
+            {
+              "type": "frame",
+              "id": "3UQQe",
+              "name": "heroLeft",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": "$spacing-16",
+              "children": [
+                {
+                  "id": "YEYkA",
+                  "type": "ref",
+                  "ref": "AoVvV",
+                  "name": "heroBadge",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "87uqO",
+                      "fill": "$accent",
+                      "content": "Shopify App + IA",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "$font-medium"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "Lgx0f",
+                  "fill": "$foreground",
+                  "content": "Try‑on virtual con IA que hace que tus clientes compren mas y devuelvan menos.",
+                  "fontFamily": "Inter",
+                  "fontSize": 32,
+                  "fontWeight": "$font-medium",
+                  "letterSpacing": -0.3
+                },
+                {
+                  "type": "text",
+                  "id": "Ic9Pp",
+                  "fill": "$foreground-muted",
+                  "content": "Tus usuarios suben su foto, eligen la prenda y reciben un look realista en segundos. Aumenta conversion y reduce devoluciones en Shopify.",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "$font-regular"
+                },
+                {
+                  "type": "frame",
+                  "id": "gMl9O",
+                  "name": "heroCtaRow",
+                  "gap": "$spacing-12",
+                  "children": [
+                    {
+                      "id": "2vVkC",
+                      "type": "ref",
+                      "ref": "oxf0W",
+                      "name": "ctaA",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Alh1Y",
+                          "fill": "$primary-foreground",
+                          "content": "Reservar demo",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "$font-medium"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "087KH",
+                      "type": "ref",
+                      "ref": "XsYb7",
+                      "name": "ctaB",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "zKO3D",
+                          "fill": "$foreground",
+                          "content": "Probar API",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "$font-medium"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "il6t2",
+              "name": "Hero Image",
+              "width": 420,
+              "height": "fill_container",
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "./images/generated-1771697090892.png",
+                "mode": "fill"
+              },
+              "cornerRadius": "$radius-lg"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "SEOej",
+          "name": "Logos",
+          "width": "fill_container",
+          "height": 56,
+          "gap": "$spacing-16",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "7sN6l",
+              "fill": "$foreground-subtle",
+              "content": "Marcas que confian",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "$font-medium"
+            },
+            {
+              "type": "frame",
+              "id": "V8kNG",
+              "width": 120,
+              "height": 28,
+              "fill": "$surface-muted",
+              "cornerRadius": "$radius-sm"
+            },
+            {
+              "type": "frame",
+              "id": "ITf0p",
+              "width": 120,
+              "height": 28,
+              "fill": "$surface-muted",
+              "cornerRadius": "$radius-sm"
+            },
+            {
+              "type": "frame",
+              "id": "Wxcog",
+              "width": 120,
+              "height": 28,
+              "fill": "$surface-muted",
+              "cornerRadius": "$radius-sm"
+            },
+            {
+              "type": "frame",
+              "id": "WkjV7",
+              "width": 120,
+              "height": 28,
+              "fill": "$surface-muted",
+              "cornerRadius": "$radius-sm"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "A3gxA",
+          "name": "Metrics",
+          "width": "fill_container",
+          "gap": "$spacing-20",
+          "children": [
+            {
+              "type": "frame",
+              "id": "0w7H7",
+              "name": "metric1",
+              "width": "fill_container",
+              "fill": "$surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": {
+                "thickness": 1,
+                "fill": "$border"
+              },
+              "layout": "vertical",
+              "gap": "$spacing-8",
+              "padding": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "1YTIe",
+                  "fill": "$foreground",
+                  "content": "+18%",
+                  "fontFamily": "Inter",
+                  "fontSize": 32,
+                  "fontWeight": "$font-medium"
+                },
+                {
+                  "type": "text",
+                  "id": "7n6z2",
+                  "fill": "$foreground-muted",
+                  "content": "Conversión promedio",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "$font-regular"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "qEFSY",
+              "name": "metric2",
+              "width": "fill_container",
+              "fill": "$surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": {
+                "thickness": 1,
+                "fill": "$border"
+              },
+              "layout": "vertical",
+              "gap": "$spacing-8",
+              "padding": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "SfHVo",
+                  "fill": "$foreground",
+                  "content": "-26%",
+                  "fontFamily": "Inter",
+                  "fontSize": 32,
+                  "fontWeight": "$font-medium"
+                },
+                {
+                  "type": "text",
+                  "id": "EkVfK",
+                  "fill": "$foreground-muted",
+                  "content": "Reduccion de devoluciones",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "$font-regular"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "crKcN",
+              "name": "metric3",
+              "width": "fill_container",
+              "fill": "$surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": {
+                "thickness": 1,
+                "fill": "$border"
+              },
+              "layout": "vertical",
+              "gap": "$spacing-8",
+              "padding": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "b02XY",
+                  "fill": "$foreground",
+                  "content": "<10s",
+                  "fontFamily": "Inter",
+                  "fontSize": 32,
+                  "fontWeight": "$font-medium"
+                },
+                {
+                  "type": "text",
+                  "id": "ugFzM",
+                  "fill": "$foreground-muted",
+                  "content": "Tiempo por render",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "$font-regular"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "X4LtD",
+          "name": "Features",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$spacing-16",
+          "children": [
+            {
+              "type": "text",
+              "id": "43HoQ",
+              "fill": "$foreground",
+              "content": "Por que TryOnAI",
+              "fontFamily": "Inter",
+              "fontSize": 18,
+              "fontWeight": "$font-medium"
+            },
+            {
+              "type": "frame",
+              "id": "VSdex",
+              "name": "featRow",
+              "width": "fill_container",
+              "gap": "$spacing-20",
+              "children": [
+                {
+                  "id": "abDt0",
+                  "type": "ref",
+                  "ref": "tSDII",
+                  "name": "card1",
+                  "descendants": {
+                    "MrgOv": {
+                      "type": "text",
+                      "id": "uwv7l",
+                      "fill": "$foreground",
+                      "content": "Drape & fit reales",
+                      "fontFamily": "Inter",
+                      "fontSize": 18,
+                      "fontWeight": "$font-medium"
+                    },
+                    "eRuyO": {
+                      "type": "text",
+                      "id": "0mpAb",
+                      "fill": "$foreground-muted",
+                      "content": "Modelos de diffusion entrenados por categoria para caidas naturales.",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "$font-regular"
+                    },
+                    "ChtWX": {
+                      "type": "text",
+                      "id": "zOtgH",
+                      "fill": "$accent",
+                      "content": "Listo en 2 semanas",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "$font-medium"
+                    }
+                  }
+                },
+                {
+                  "id": "tMjYi",
+                  "type": "ref",
+                  "ref": "tSDII",
+                  "name": "card2",
+                  "descendants": {
+                    "MrgOv": {
+                      "type": "text",
+                      "id": "omzEK",
+                      "fill": "$foreground",
+                      "content": "Shopify first",
+                      "fontFamily": "Inter",
+                      "fontSize": 18,
+                      "fontWeight": "$font-medium"
+                    },
+                    "eRuyO": {
+                      "type": "text",
+                      "id": "DF4ZA",
+                      "fill": "$foreground-muted",
+                      "content": "App nativa con sync de catalogo y analytics por producto.",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "$font-regular"
+                    },
+                    "ChtWX": {
+                      "type": "text",
+                      "id": "Cxu2n",
+                      "fill": "$accent",
+                      "content": "App Store review",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "$font-medium"
+                    }
+                  }
+                },
+                {
+                  "id": "L5M3l",
+                  "type": "ref",
+                  "ref": "tSDII",
+                  "name": "card3",
+                  "descendants": {
+                    "MrgOv": {
+                      "type": "text",
+                      "id": "q1VjU",
+                      "fill": "$foreground",
+                      "content": "Privacidad by default",
+                      "fontFamily": "Inter",
+                      "fontSize": 18,
+                      "fontWeight": "$font-medium"
+                    },
+                    "eRuyO": {
+                      "type": "text",
+                      "id": "bcgQh",
+                      "fill": "$foreground-muted",
+                      "content": "Procesamiento seguro, retencion minima y opt‑out inmediato.",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "$font-regular"
+                    },
+                    "ChtWX": {
+                      "type": "text",
+                      "id": "irrf6",
+                      "fill": "$accent",
+                      "content": "SOC2 en progreso",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "$font-medium"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "1noTU",
+          "name": "CTA",
+          "width": "fill_container",
+          "height": 160,
+          "fill": "$primary",
+          "cornerRadius": "$radius-lg",
+          "padding": [
+            24,
+            32
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "gEqvl",
+              "name": "ctaText",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": "$spacing-8",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "TcUPN",
+                  "fill": "$primary-foreground",
+                  "content": "Listo para activar try‑on en tu tienda?",
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "$font-medium"
+                },
+                {
+                  "type": "text",
+                  "id": "elngY",
+                  "fill": "$primary-foreground",
+                  "content": "Instalacion en 1 dia, soporte de onboarding y SLA para enterprise.",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "$font-regular"
+                }
+              ]
+            },
+            {
+              "id": "QvycZ",
+              "type": "ref",
+              "ref": "XsYb7",
+              "name": "ctaBtn",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "AhYoT",
+                  "fill": "$foreground",
+                  "content": "Agendar onboarding",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "$font-medium"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "z0QrT",
+          "name": "How It Works",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$spacing-16",
+          "children": [
+            {
+              "type": "text",
+              "id": "PBp9o",
+              "fill": "$foreground",
+              "content": "Como funciona",
+              "fontFamily": "Inter",
+              "fontSize": 18,
+              "fontWeight": "$font-medium"
+            },
+            {
+              "type": "frame",
+              "id": "NITRf",
+              "name": "row",
+              "width": "fill_container",
+              "gap": "$spacing-20",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "SlLPY",
+                  "name": "step1",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "$border"
+                  },
+                  "layout": "vertical",
+                  "gap": "$spacing-8",
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "wEK7X",
+                      "fill": "$foreground",
+                      "content": "1. Sube tu foto",
+                      "fontFamily": "Inter",
+                      "fontSize": 16,
+                      "fontWeight": "$font-medium"
+                    },
+                    {
+                      "type": "text",
+                      "id": "K3OoH",
+                      "fill": "$foreground-muted",
+                      "content": "Web o app. La IA detecta pose y cuerpo.",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "$font-regular"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "okpwX",
+                  "name": "step2",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "$border"
+                  },
+                  "layout": "vertical",
+                  "gap": "$spacing-8",
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "AQz4w",
+                      "fill": "$foreground",
+                      "content": "2. Elige la prenda",
+                      "fontFamily": "Inter",
+                      "fontSize": 16,
+                      "fontWeight": "$font-medium"
+                    },
+                    {
+                      "type": "text",
+                      "id": "MKOfS",
+                      "fill": "$foreground-muted",
+                      "content": "Selecciona color y talla con un clic.",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "$font-regular"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "aqW0F",
+                  "name": "step3",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": "$radius-lg",
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "$border"
+                  },
+                  "layout": "vertical",
+                  "gap": "$spacing-8",
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "iz8AC",
+                      "fill": "$foreground",
+                      "content": "3. Recibe el try‑on",
+                      "fontFamily": "Inter",
+                      "fontSize": 16,
+                      "fontWeight": "$font-medium"
+                    },
+                    {
+                      "type": "text",
+                      "id": "EuM8z",
+                      "fill": "$foreground-muted",
+                      "content": "Look realista en segundos, listo para comprar.",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "$font-regular"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variables": {
+    "accent": {
+      "type": "color",
+      "value": "#2B8A6E"
+    },
+    "accent-soft": {
+      "type": "color",
+      "value": "#2B8A6E1A"
+    },
+    "bg": {
+      "type": "color",
+      "value": "#F7F4F0"
+    },
+    "border": {
+      "type": "color",
+      "value": "#E5E0D8"
+    },
+    "border-strong": {
+      "type": "color",
+      "value": "#CFC7BC"
+    },
+    "font-12": {
+      "type": "number",
+      "value": 12
+    },
+    "font-14": {
+      "type": "number",
+      "value": 14
+    },
+    "font-16": {
+      "type": "number",
+      "value": 16
+    },
+    "font-18": {
+      "type": "number",
+      "value": 18
+    },
+    "font-24": {
+      "type": "number",
+      "value": 24
+    },
+    "font-32": {
+      "type": "number",
+      "value": 32
+    },
+    "font-40": {
+      "type": "number",
+      "value": 40
+    },
+    "font-family": {
+      "type": "string",
+      "value": "Inter"
+    },
+    "font-light": {
+      "type": "string",
+      "value": "300"
+    },
+    "font-medium": {
+      "type": "string",
+      "value": "500"
+    },
+    "font-regular": {
+      "type": "string",
+      "value": "400"
+    },
+    "font-semibold": {
+      "type": "string",
+      "value": "600"
+    },
+    "foreground": {
+      "type": "color",
+      "value": "#1B1B1B"
+    },
+    "foreground-muted": {
+      "type": "color",
+      "value": "#6F6B66"
+    },
+    "foreground-subtle": {
+      "type": "color",
+      "value": "#9A958E"
+    },
+    "negative": {
+      "type": "color",
+      "value": "#8B4049"
+    },
+    "primary": {
+      "type": "color",
+      "value": "#1E3A5F"
+    },
+    "primary-foreground": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "radius-lg": {
+      "type": "number",
+      "value": 16
+    },
+    "radius-md": {
+      "type": "number",
+      "value": 12
+    },
+    "radius-pill": {
+      "type": "number",
+      "value": 80
+    },
+    "radius-sm": {
+      "type": "number",
+      "value": 8
+    },
+    "radius-xs": {
+      "type": "number",
+      "value": 2
+    },
+    "spacing-12": {
+      "type": "number",
+      "value": 12
+    },
+    "spacing-16": {
+      "type": "number",
+      "value": 16
+    },
+    "spacing-2": {
+      "type": "number",
+      "value": 2
+    },
+    "spacing-20": {
+      "type": "number",
+      "value": 20
+    },
+    "spacing-28": {
+      "type": "number",
+      "value": 28
+    },
+    "spacing-4": {
+      "type": "number",
+      "value": 4
+    },
+    "spacing-8": {
+      "type": "number",
+      "value": 8
+    },
+    "surface": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "surface-muted": {
+      "type": "color",
+      "value": "#F1EEE9"
+    },
+    "warning": {
+      "type": "color",
+      "value": "#B9692C"
+    }
+  }
+}
