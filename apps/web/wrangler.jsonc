@@ -10,6 +10,10 @@
     "directory": "./dist",
     "binding": "ASSETS",
   },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+  },
   "env": {
     "local": {
       "name": "vto-web-local",

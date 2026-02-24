@@ -24,7 +24,8 @@ create policy tryon_job_events_insert_own on public.tryon_job_events
 for insert
 with check (tenant_id = public.current_tenant_id());
 
-create or replace view public.tryon_job_timing_v as
+create or replace view public.tryon_job_timing_v
+with (security_invoker = true) as
 with events as (
   select
     job_id,

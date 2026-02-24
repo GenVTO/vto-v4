@@ -3,7 +3,7 @@ create schema if not exists storage;
 
 -- Create the bucket safely
 insert into storage.buckets (id, name, public)
-values ('tryon-local', 'tryon-local', true)
+values ('tryon-local', 'tryon-local', false)
 on conflict (id) do nothing;
 
 -- Policies
