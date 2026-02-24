@@ -1,10 +1,21 @@
 ---
 // oxlint-disable-next-line import/no-unassigned-import
 import '../styles/global.css'
-const { title = 'VTO', description = '' } = Astro.props
+import { Header } from '@/components/marketing/Header'
+
+interface Props {
+  title?: string
+  description?: string
+}
+
+const {
+  title = 'GenVTO - AI Virtual Try-On for Shopify',
+  description = 'Increase sales and reduce returns with our AI virtual try-on solution for Shopify.',
+} = Astro.props
 ---
 
-<html lang="en">
+<!doctype html>
+<html lang="en" class="scroll-smooth">
   <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
@@ -16,44 +27,17 @@ const { title = 'VTO', description = '' } = Astro.props
     <link rel="manifest" href="/site.webmanifest" />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap"
+      rel="stylesheet"
+    />
   </head>
-  <body>
-    <header
-      class="bg-card/75 orb-shadow sticky top-0 z-50 border-b backdrop-blur-sm"
-    >
-      <div
-        class="mx-auto flex max-w-6xl items-center justify-between px-5 py-3 sm:px-8 lg:px-10"
-      >
-        <a href="/" class="flex items-center gap-3">
-          <span
-            class="bg-accent text-accent-foreground font-display inline-flex h-9 w-9 items-center justify-center rounded-xl text-base font-bold"
-            >V</span
-          >
-          <span class="font-display text-base font-semibold"
-            >VTO for Shopify</span
-          >
-        </a>
-        <nav class="flex items-center gap-2">
-          <a
-            class="hover:bg-muted rounded-lg border px-3 py-2 text-sm font-semibold"
-            href="/">Inicio</a
-          >
-          <a
-            class="hover:bg-muted rounded-lg border px-3 py-2 text-sm font-semibold"
-            href="/admin/try-on">API Playground</a
-          >
-        </nav>
-      </div>
-    </header>
-
+  <body
+    class="bg-background-light selection:bg-primary overflow-x-hidden font-sans text-slate-900 antialiased selection:text-white"
+  >
+    <Header client:load />
     <slot />
-
-    <footer class="mt-16 border-t">
-      <div
-        class="text-muted-foreground mx-auto max-w-6xl px-5 py-10 text-sm sm:px-8 lg:px-10"
-      >
-        <p>© {new Date().getFullYear()} VTO. Todos los derechos reservados.</p>
-      </div>
-    </footer>
   </body>
 </html>

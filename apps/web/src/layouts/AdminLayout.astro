@@ -1,0 +1,18 @@
+---
+import Layout from './Layout.astro'
+import { cn } from '@/lib/utils'
+
+interface Props {
+  title?: string
+  description?: string
+  maxWidth?: string
+}
+
+const { title, description, maxWidth = 'max-w-4xl' } = Astro.props
+---
+
+<Layout title={title} description={description}>
+  <main class={cn('mx-auto px-5 pt-24 pb-20 sm:px-8', maxWidth)}>
+    <slot />
+  </main>
+</Layout>

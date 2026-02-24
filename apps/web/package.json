@@ -27,6 +27,7 @@
     "@radix-ui/react-slot": "1.2.4",
     "@sentry/astro": "10.40.0",
     "@sentry/react": "10.40.0",
+    "@tailwindcss/typography": "0.5.19",
     "@vto/db": "workspace:*",
     "@vto/env": "workspace:*",
     "@vto/logger": "workspace:*",

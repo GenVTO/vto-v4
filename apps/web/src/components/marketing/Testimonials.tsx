@@ -3,6 +3,7 @@ import React from 'react'
 
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { Card, CardContent } from '@/components/ui/card'
+import { cn } from '@/lib/utils'
 
 export function Testimonials() {
   const testimonials = [
@@ -44,10 +45,7 @@ export function Testimonials() {
         </h2>
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           {testimonials.map((testimonial, index) => (
-            <Card
-              key={index}
-              className={`border-slate-100 shadow-sm ${testimonial.className || ''}`}
-            >
+            <Card key={index} className={cn('border-slate-100 shadow-sm', testimonial.className)}>
               <CardContent className="p-8">
                 <div className="mb-4 flex items-center text-yellow-400">
                   {[...Array(5)].map((_, i) => (

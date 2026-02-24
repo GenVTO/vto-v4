@@ -1,6 +1,5 @@
 ---
-import LandingLayout from '../layouts/LandingLayout.astro'
-import { Header } from '../components/marketing/Header'
+import Layout from '../layouts/Layout.astro'
 import { Hero } from '../components/marketing/Hero'
 import { LogoWall } from '../components/marketing/LogoWall'
 import { HowItWorks } from '../components/marketing/HowItWorks'
@@ -13,8 +12,7 @@ import { CTA } from '../components/marketing/CTA'
 import { Footer } from '../components/marketing/Footer'
 ---
 
-<LandingLayout>
-  <Header client:load />
+<Layout>
   <main>
     <Hero />
     <LogoWall />
@@ -27,4 +25,4 @@ import { Footer } from '../components/marketing/Footer'
     <CTA />
   </main>
   <Footer />
-</LandingLayout>
+</Layout>
