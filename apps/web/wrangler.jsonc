@@ -29,6 +29,7 @@
         "LOG_ENABLE_AXIOM": "false",
         "AXIOM_DATASET": "api-local",
         "TRYON_PROVIDER_ORDER": "fashn",
+        "SENTRY_DSN": "https://988220f135b530c34e02936a596041a6@o4507666244698112.ingest.de.sentry.io/4508846995669072",
       },
       "kv_namespaces": [
         {
@@ -57,6 +58,7 @@
         "LOG_ENABLE_AXIOM": "false",
         "AXIOM_DATASET": "api-dev",
         "TRYON_PROVIDER_ORDER": "fashn",
+        "SENTRY_DSN": "https://988220f135b530c34e02936a596041a6@o4507666244698112.ingest.de.sentry.io/4508846995669072",
       },
       "r2_buckets": [
         {
@@ -95,6 +97,7 @@
         "LOG_ENABLE_AXIOM": "true",
         "AXIOM_DATASET": "api",
         "TRYON_PROVIDER_ORDER": "fashn",
+        "SENTRY_DSN": "https://988220f135b530c34e02936a596041a6@o4507666244698112.ingest.de.sentry.io/4508846995669072",
       },
       "r2_buckets": [
         {

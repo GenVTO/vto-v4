@@ -1,4 +1,13 @@
+import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 
 export interface TryOnJobEvent {
   id: string
@@ -33,6 +42,32 @@ interface TryOnHistoryResultsProps {
   data: TryOnHistoryResponse | null
 }
 
+function calculateDuration(start: string, end: string): string {
+  const diff = new Date(end).getTime() - new Date(start).getTime()
+  return `${(diff / 1000).toFixed(2)}s`
+}
+
+export function calculateEventDuration(
+  current: string,
+  previous: string | undefined,
+): string | null {
+  if (!previous) {
+    return null
+  }
+  const diff = new Date(current).getTime() - new Date(previous).getTime()
+  return `${(diff / 1000).toFixed(2)}s`
+}
+
+function getStatusVariant(status: string): 'success' | 'destructive' | 'default' {
+  if (status === 'completed') {
+    return 'success'
+  }
+  if (status === 'failed') {
+    return 'destructive'
+  }
+  return 'default'
+}
+
 export function TryOnHistoryResults({ data }: TryOnHistoryResultsProps) {
   if (!data) {
     return null
@@ -45,69 +80,57 @@ export function TryOnHistoryResults({ data }: TryOnHistoryResultsProps) {
           Results ({data.items.length}/{data.total}) request_id={data.request_id}
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent>
         {data.items.length === 0 ? (
           <p className="text-sm text-muted-foreground">No jobs found for current filters.</p>
-        ) : null}
-        {data.items.map((item) => (
-          <div className="rounded-lg border p-3 text-sm" key={item.id}>
-            <p>
-              <strong>job_id:</strong> {item.id}
-            </p>
-            <p>
-              <strong>status:</strong> {item.status}
-            </p>
-            <p>
-              <strong>model:</strong> {item.model}
-            </p>
-            <p>
-              <strong>product_id:</strong> {item.product_id}
-            </p>
-            <p>
-              <strong>visitor_id:</strong> {item.visitor_id}
-            </p>
-            <p>
-              <strong>provider_job_id:</strong> {item.provider_job_id ?? '-'}
-            </p>
-            <p>
-              <strong>result_url (platform):</strong>{' '}
-              {item.result_url ? (
-                <a className="underline" href={item.result_url} rel="noreferrer" target="_blank">
-                  {item.result_url}
-                </a>
-              ) : (
-                '-'
-              )}
-            </p>
-            <p>
-              <strong>created_at:</strong> {item.created_at}
-            </p>
-            <p>
-              <strong>updated_at:</strong> {item.updated_at}
-            </p>
-
-            {item.events && item.events.length > 0 && (
-              <div className="mt-4 border-t pt-4">
-                <p className="mb-2 font-semibold">Events:</p>
-                <div className="space-y-2">
-                  {item.events.map((event) => (
-                    <div className="rounded bg-muted/50 p-2 text-xs" key={event.id}>
-                      <div className="flex justify-between">
-                        <span className="font-medium">{event.event_type}</span>
-                        <span className="text-muted-foreground">{event.occurred_at}</span>
-                      </div>
-                      {event.metadata && Object.keys(event.metadata).length > 0 && (
-                        <pre className="mt-1 overflow-x-auto text-[10px] whitespace-pre-wrap text-muted-foreground">
-                          {JSON.stringify(event.metadata, null, 2)}
-                        </pre>
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Status</TableHead>
+                <TableHead>Job ID</TableHead>
+                <TableHead>Model</TableHead>
+                <TableHead>Product ID</TableHead>
+                <TableHead>Duration</TableHead>
+                <TableHead>Result</TableHead>
+                <TableHead>Created At</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data.items.map((item) => {
+                const totalDuration = calculateDuration(item.created_at, item.updated_at)
+                return (
+                  <TableRow key={item.id}>
+                    <TableCell>
+                      <Badge variant={getStatusVariant(item.status)}>{item.status}</Badge>
+                    </TableCell>
+                    <TableCell className="font-mono text-xs">{item.id}</TableCell>
+                    <TableCell>{item.model}</TableCell>
+                    <TableCell>{item.product_id}</TableCell>
+                    <TableCell className="font-mono">{totalDuration}</TableCell>
+                    <TableCell>
+                      {item.result_url ? (
+                        <a
+                          className="text-blue-500 underline hover:text-blue-700"
+                          href={item.result_url}
+                          rel="noreferrer"
+                          target="_blank"
+                        >
+                          View
+                        </a>
+                      ) : (
+                        '-'
                       )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
+                    </TableCell>
+                    <TableCell className="text-xs text-muted-foreground">
+                      {new Date(item.created_at).toLocaleString()}
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+        )}
       </CardContent>
     </Card>
   )

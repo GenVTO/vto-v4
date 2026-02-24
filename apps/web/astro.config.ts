@@ -1,5 +1,7 @@
 import cloudflare from '@astrojs/cloudflare'
 import react from '@astrojs/react'
+// oxlint-disable-next-line import/default
+import sentry from '@sentry/astro'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'astro/config'
 
@@ -9,7 +11,15 @@ export default defineConfig({
       enabled: true,
     },
   }),
-  integrations: [react()],
+  integrations: [
+    react(),
+    sentry({
+      dsn: process.env.SENTRY_DSN,
+      sourceMapsUploadOptions: {
+        telemetry: false,
+      },
+    }),
+  ],
   output: 'server',
   server: {
     host: 'localhost',

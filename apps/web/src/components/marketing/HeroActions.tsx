@@ -2,12 +2,12 @@ import { Button } from '@/components/ui/button'
 
 export function HeroActions() {
   return (
-    <div className="flex flex-col gap-3 sm:flex-row">
-      <Button asChild size="lg" className="min-w-52">
-        <a href="/try-on">Try Live Demo</a>
+    <div className="flex gap-2">
+      <Button asChild>
+        <a href="/admin/try-on">Try Demo</a>
       </Button>
-      <Button asChild size="lg" variant="outline" className="min-w-52">
-        <a href="#pricing">See Pricing Model</a>
+      <Button asChild variant="secondary">
+        <a href="https://github.com/vto-ai/vto">View Source</a>
       </Button>
     </div>
   )

@@ -1,0 +1,55 @@
+---
+import Layout from '../layouts/Layout.astro'
+import { Button } from '@/components/ui/button'
+
+interface Props {
+  error?: unknown
+}
+
+const { error } = Astro.props
+---
+
+<Layout title="Server Error">
+  <div
+    class="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center"
+  >
+    <div class="bg-destructive/10 mb-6 rounded-full p-4">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="48"
+        height="48"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="text-destructive"
+      >
+        <path
+          d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"
+        ></path>
+        <line x1="12" y1="9" x2="12" y2="13"></line>
+        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+      </svg>
+    </div>
+    <h1 class="mb-2 text-4xl font-bold tracking-tight">500 - Server Error</h1>
+    <p class="text-muted-foreground mb-8 max-w-md text-lg">
+      Something went wrong on our end. We're working on fixing it.
+    </p>
+    {
+      error instanceof Error && (
+        <div class="bg-muted text-muted-foreground mb-8 max-w-lg overflow-x-auto rounded-lg border p-4 text-left font-mono text-xs">
+          <p class="text-foreground mb-2 font-bold">Error Details:</p>
+          <p>{error.message}</p>
+        </div>
+      )
+    }
+    <div class="flex gap-4">
+      <Button asChild variant="outline">
+        <a href="/">Go back home</a>
+      </Button>
+      <Button onClick={() => window.location.reload()}>Try again</Button>
+    </div>
+  </div>
+</Layout>

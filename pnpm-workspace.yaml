@@ -8,6 +8,7 @@ ignoredBuiltDependencies:
   - sharp
 
 onlyBuiltDependencies:
+  - '@sentry/cli'
   - esbuild
   - supabase
   - workerd

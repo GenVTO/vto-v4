@@ -22,6 +22,8 @@ const badgeVariants = cva(
         outline:
           'border-border text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground',
         secondary: 'bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90',
+        success:
+          'bg-green-500 text-white [a&]:hover:bg-green-600 focus-visible:ring-green-500/20 dark:focus-visible:ring-green-500/40',
       },
     },
   },

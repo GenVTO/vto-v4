@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@axiomhq/js": "1.4.0",
-    "@sentry/cloudflare": "10.39.0",
+    "@sentry/cloudflare": "10.40.0",
     "@vto/env": "workspace:*",
     "loglayer": "9.1.0",
     "pino": "10.3.1"

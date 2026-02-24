@@ -25,6 +25,8 @@
     "@astrojs/react": "4.4.2",
     "@hookform/resolvers": "5.2.2",
     "@radix-ui/react-slot": "1.2.4",
+    "@sentry/astro": "10.40.0",
+    "@sentry/react": "10.40.0",
     "@vto/db": "workspace:*",
     "@vto/env": "workspace:*",
     "@vto/logger": "workspace:*",
