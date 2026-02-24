@@ -1,18 +1,22 @@
 ---
 import Layout from '../layouts/Layout.astro'
+import { APP_CONFIG } from '@/lib/constants'
+
+const title = 'Security'
+const description = `Security Policy for ${APP_CONFIG.name}. How we protect your data and infrastructure.`
 ---
 
-<Layout title="Security - GenVTO">
+<Layout title={title} description={description}>
   <main class="mx-auto max-w-3xl px-5 pt-24 pb-20 sm:px-8">
     <div class="prose prose-slate lg:prose-lg max-w-none">
-      <h1>Security</h1>
+      <h1>{title}</h1>
       <p class="lead">Last updated: February 24, 2026</p>
 
       <h2>1. Our Commitment to Security</h2>
       <p>
-        At GenVTO, we are committed to protecting the data you share with us.
-        This Security Policy outlines the measures we take to ensure the
-        confidentiality, integrity, and availability of your information.
+        At {APP_CONFIG.name}, we are committed to protecting the data you share
+        with us. This Security Policy outlines the measures we take to ensure
+        the confidentiality, integrity, and availability of your information.
       </p>
 
       <h2>2. Data Encryption</h2>

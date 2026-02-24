@@ -2,7 +2,7 @@
 declare module 'react-image-magnifiers'
 
 interface ImportMetaEnv {
-  readonly PUBLIC_SHOPIFY_APP_URL: string
+  // Add other env vars here if needed
 }
 
 interface ImportMeta {

@@ -1,9 +1,10 @@
 import React from 'react'
 
 import { Button } from '@/components/ui/button'
+import { APP_CONFIG } from '@/lib/constants'
 
 export function CTA() {
-  const shopifyUrl = import.meta.env.PUBLIC_SHOPIFY_APP_URL || '#'
+  const shopifyUrl = APP_CONFIG.links.shopify
 
   return (
     <section className="px-4 py-20">

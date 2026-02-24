@@ -4,12 +4,13 @@ import React, { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Logo } from '@/components/ui/logo'
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet'
+import { APP_CONFIG } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
-  const shopifyUrl = import.meta.env.PUBLIC_SHOPIFY_APP_URL || '#'
+  const shopifyUrl = APP_CONFIG.links.shopify
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,18 +25,8 @@ export function Header() {
   }, [])
 
   const navLinks = isAdmin
-    ? [
-        { href: '/admin/try-on', name: 'Playground' },
-        { href: '/admin/history', name: 'History' },
-        { href: '/admin/env', name: 'Environment' },
-      ]
-    : [
-        { href: '/#how-it-works', name: 'How it works' },
-        { href: '/#benefits', name: 'Benefits' },
-        { href: '/#pricing', name: 'Pricing' },
-        { href: '/#faq', name: 'FAQ' },
-        { href: '/#blog', name: 'Blog' },
-      ]
+    ? APP_CONFIG.navigation.admin.map((link) => ({ href: link.href, name: link.label }))
+    : APP_CONFIG.navigation.product.map((link) => ({ href: link.href, name: link.label }))
 
   return (
     <header

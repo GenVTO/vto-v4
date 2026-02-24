@@ -2,16 +2,26 @@
 // oxlint-disable-next-line import/no-unassigned-import
 import '../styles/global.css'
 import { Header } from '@/components/marketing/Header'
+import { APP_CONFIG } from '@/lib/constants'
 
 interface Props {
   title?: string
   description?: string
+  image?: string
+  canonicalURL?: string
 }
 
 const {
-  title = 'GenVTO - AI Virtual Try-On for Shopify',
-  description = 'Increase sales and reduce returns with our AI virtual try-on solution for Shopify.',
+  title = APP_CONFIG.seo.defaultTitle,
+  description = APP_CONFIG.seo.defaultDescription,
+  image = APP_CONFIG.seo.openGraph.images[0].url,
+  canonicalURL = new URL(Astro.url.pathname, APP_CONFIG.seo.siteUrl).href,
 } = Astro.props
+
+const formattedTitle =
+  title === APP_CONFIG.seo.defaultTitle
+    ? title
+    : APP_CONFIG.seo.titleTemplate.replace('%s', title)
 ---
 
 <!doctype html>
@@ -21,12 +31,34 @@ const {
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    <title>{title}</title>
-    {description && <meta name="description" content={description} />}
+
+    <!-- SEO -->
+    <title>{formattedTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={formattedTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={image} />
+    <meta
+      property="og:site_name"
+      content={APP_CONFIG.seo.openGraph.site_name}
+    />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={formattedTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image} />
+
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
     <link

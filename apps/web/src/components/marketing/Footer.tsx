@@ -3,25 +3,16 @@ import React from 'react'
 
 import { Logo } from '@/components/ui/logo'
 import { Separator } from '@/components/ui/separator'
+import { APP_CONFIG } from '@/lib/constants'
 
 import { SystemStatus } from './SystemStatus'
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
 
-  const productLinks = [
-    { href: '/#how-it-works', label: 'How it works' },
-    { href: '/#benefits', label: 'Benefits' },
-    { href: '/#pricing', label: 'Pricing' },
-    { href: '/#faq', label: 'FAQ' },
-  ]
+  const productLinks = APP_CONFIG.navigation.product.filter((link) => link.label !== 'Blog') // Adjust if needed
 
-  const legalLinks = [
-    { href: '/privacy', label: 'Privacy Policy' },
-    { href: '/terms', label: 'Terms of Service' },
-    { href: '/cookies', label: 'Cookie Policy' },
-    { href: '/security', label: 'Security' },
-  ]
+  const legalLinks = APP_CONFIG.navigation.legal
 
   return (
     <footer className="border-t border-slate-800 bg-slate-950 pt-20 pb-10 text-slate-300">

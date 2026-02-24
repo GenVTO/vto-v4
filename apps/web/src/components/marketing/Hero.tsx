@@ -4,9 +4,10 @@ import React from 'react'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { APP_CONFIG } from '@/lib/constants'
 
 export function Hero() {
-  const shopifyUrl = import.meta.env.PUBLIC_SHOPIFY_APP_URL || '#'
+  const shopifyUrl = APP_CONFIG.links.shopify
 
   return (
     <section className="relative overflow-hidden bg-background-light pt-32 pb-20 lg:pt-40 lg:pb-32">

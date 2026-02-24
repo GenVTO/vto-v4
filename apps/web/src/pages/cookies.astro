@@ -1,11 +1,15 @@
 ---
 import Layout from '../layouts/Layout.astro'
+import { APP_CONFIG } from '@/lib/constants'
+
+const title = 'Cookie Policy'
+const description = `Cookie Policy for ${APP_CONFIG.name}. Understand how and why we use cookies.`
 ---
 
-<Layout title="Cookie Policy - GenVTO">
+<Layout title={title} description={description}>
   <main class="mx-auto max-w-3xl px-5 pt-24 pb-20 sm:px-8">
     <div class="prose prose-slate lg:prose-lg max-w-none">
-      <h1>Cookie Policy</h1>
+      <h1>{title}</h1>
       <p class="lead">Last updated: February 24, 2026</p>
 
       <h2>1. What Are Cookies</h2>

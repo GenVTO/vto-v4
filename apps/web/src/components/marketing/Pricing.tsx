@@ -3,9 +3,10 @@ import React from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { APP_CONFIG } from '@/lib/constants'
 
 export function Pricing() {
-  const shopifyUrl = import.meta.env.PUBLIC_SHOPIFY_APP_URL || '#'
+  const shopifyUrl = APP_CONFIG.links.shopify
 
   return (
     <section className="bg-white py-20 lg:py-32" id="pricing">
