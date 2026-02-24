@@ -1,6 +1,7 @@
 import { Shirt } from 'lucide-react'
 import React from 'react'
 
+import { Logo } from '@/components/ui/logo'
 import { Separator } from '@/components/ui/separator'
 
 import { SystemStatus } from './SystemStatus'
@@ -28,11 +29,8 @@ export function Footer() {
         <div className="flex flex-col gap-12 lg:flex-row lg:justify-between">
           {/* Brand Column */}
           <div className="max-w-sm">
-            <div className="mb-6 flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white shadow-lg shadow-primary/20">
-                <Shirt className="h-6 w-6" />
-              </div>
-              <span className="text-2xl font-bold tracking-tight text-white">GenVTO</span>
+            <div className="mb-6">
+              <Logo variant="white" size="lg" />
             </div>
             <p className="mb-8 text-sm leading-7 text-slate-400">
               Revolutionizing the fashion e-commerce experience with AI-powered virtual try-on

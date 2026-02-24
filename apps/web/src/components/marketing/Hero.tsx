@@ -45,17 +45,6 @@ export function Hero() {
                   Install on Shopify
                 </a>
               </Button>
-              <Button
-                asChild
-                variant="outline"
-                size="lg"
-                className="h-12 border-slate-200 px-6 text-base font-bold text-slate-700 hover:bg-slate-50 hover:text-slate-900"
-              >
-                <a href="#demo">
-                  <PlayCircle className="mr-2 h-5 w-5" />
-                  View Demo
-                </a>
-              </Button>
             </div>
 
             {/* Trust Metrics */}
