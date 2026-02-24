@@ -57,7 +57,7 @@ class FakeStorageGateway implements StorageGateway {
     }
     return {
       contentType: 'image/jpeg',
-      key: `try-on/results/${input.shopDomain}/${input.jobId}/result.jpg`,
+      key: `${input.shopDomain}/${input.jobId}/result/image.jpg`,
       resultUrl: `https://example.com/${this.id}/${input.jobId}.jpg`,
       sizeBytes: 123,
     }

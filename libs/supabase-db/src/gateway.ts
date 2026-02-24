@@ -63,6 +63,8 @@ export class SupabaseDbGateway implements DbGateway {
       created_at: row.created_at,
       credits_charged: row.credits_charged,
       customer_id: row.customer_id,
+      error_code: row.failure_reason_normalized,
+      error_message: row.failure_reason_message,
       id: row.id,
       model: row.model,
       product_id: row.product_id,

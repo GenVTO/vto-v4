@@ -46,6 +46,8 @@ export interface TryOnJob {
   user_image_hash: string
   credits_charged: number
   provider_job_id?: string | null
+  error_code?: string | null
+  error_message?: string | null
   created_at: string
   updated_at: string
   events?: TryOnJobEvent[]

@@ -78,7 +78,7 @@ function extensionFromContentType(contentType: string): string {
 export function buildTryOnResultKey(input: PersistTryOnResultInput, contentType: string): string {
   const shop = sanitizeStoragePathSegment(input.shopDomain) || 'unknown-shop'
   const ext = extensionFromContentType(contentType)
-  return `try-on/results/${shop}/${input.jobId}/result.${ext}`
+  return `${shop}/${input.jobId}/result/image.${ext}`
 }
 
 export async function downloadProviderResult(

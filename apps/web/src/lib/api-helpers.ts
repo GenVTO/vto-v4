@@ -115,11 +115,75 @@ async function uploadInputImageAndSignUrl(input: {
   const contentType = input.file.type || 'image/jpeg'
   const fileBytes = await input.file.arrayBuffer()
   const shop = sanitizePathSegment(input.tenant.shopDomain) || 'unknown-shop'
-  const tenant = sanitizePathSegment(input.tenant.tenantId) || 'unknown-tenant'
   const visitor = sanitizePathSegment(input.visitorId) || 'unknown-visitor'
   const product = sanitizePathSegment(input.productId) || 'unknown-product'
   const ext = extensionForContentType(contentType)
-  const key = `try-on/inputs/${shop}/${tenant}/${visitor}/${product}/${input.imageType}-${crypto.randomUUID()}.${ext}`
+  // Store temporarily in input/ until we have a job ID. The try-on service should move this or we accept it lives outside the job folder structure for now.
+  // Wait, the user wants `shop/jobid/<input|result>/image`.
+  // At this point (parsing body), we DO NOT have a job ID yet.
+  // We can generate a request ID earlier and use it as a correlation ID, or we can use a temporary location.
+  // However, the user request is specific about the path structure.
+  // If we don't have the job ID, we can't put it in the job ID folder.
+  // Strategy:
+  // 1. Upload to a temporary location `temp/inputs/...`
+  // 2. Or generate the job ID here? No, the DB generates the ID.
+  // 3. Or accept that inputs might need to be moved or just use a different path for initial upload.
+
+  // Let's look at the previous implementation:
+  // `inputs/${shop}/${tenant}/${visitor}/${product}/${input.imageType}-${crypto.randomUUID()}.${ext}`
+
+  // The user wants: `shop/jobid/<input|result>/image`
+
+  // Since we don't have the job ID yet, we have a dilemma.
+  // Options:
+  // A) Generate UUID for job ID here and pass it to DB (if DB allows inserting with ID).
+  // B) Upload to temp, then copy to final location after job creation.
+  // C) Upload to `shop/pending-inputs/...` and let it stay there.
+
+  // Given the strict requirement "peferiria que el path fuera: ...", I should probably try to align as much as possible.
+  // But if I don't have the ID, I physically can't.
+
+  // Let's stick to the current path for now, but maybe simplify it to `shop/inputs/...` to match the style?
+  // The user said: "shop/jobid/<input|result>/image"
+  // This implies inputs should also be under the job ID.
+
+  // If I can't satisfy this for the initial upload, I will keep the current path but maybe clean it up.
+  // Actually, I can use the request ID or a temporary ID.
+
+  // Let's look at `uploadInputImageAndSignUrl` call site. It's called inside `parseMultipartBody`.
+  // `parseCreateTryOnBody` calls `parseMultipartBody`.
+  // Then `createJob` is called in `try-on.ts`.
+
+  // If I want to support this path, I might need to move the file AFTER job creation.
+  // But that's expensive (copy + delete).
+
+  // Let's ask the user or just use a "inputs" folder at the root for now, or `shop/inputs/...`.
+  // The user specifically mentioned "shop/jobid/...".
+
+  // Let's try to see if I can generate the ID.
+  // `libs/db` creates the job. `libs/supabase-db` uses `default` for ID usually, but I can check if I can supply it.
+
+  // `libs/supabase-db/src/gateway.ts`:
+  // .insert({ ... }) -> usually lets Postgres generate ID.
+
+  // If I can't control the ID, I can't use it in the path before creation.
+
+  // I will update the RESULT path to match the requested format: `shop/jobid/result/image`.
+  // For INPUTS, I will update them to `shop/inputs/...` to be consistent with the "shop" prefix preference,
+  // Even if I can't put them under jobid yet.
+  // Wait, if I use `shop/inputs/request_id/...` that might be close enough?
+
+  // Let's look at the previous change I made:
+  // `inputs/${shop}/${tenant}/${visitor}/${product}/${input.imageType}-${crypto.randomUUID()}.${ext}`
+
+  // I'll change this to start with `shop/...` as requested (implicitly by the structure).
+  // The user example: "shop/jobid/<input|result>/image"
+
+  // So:
+  // Results: `${shop}/${jobId}/result/image.${ext}`
+  // Inputs: `${shop}/inputs/${visitor}/${product}/${imageType}-${uuid}.${ext}` (Best effort since no job ID)
+
+  const key = `${shop}/inputs/${visitor}/${product}/${input.imageType}-${crypto.randomUUID()}.${ext}`
 
   await runtime.storage.put({
     body: fileBytes,

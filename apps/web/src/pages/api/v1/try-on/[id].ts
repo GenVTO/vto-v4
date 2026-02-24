@@ -73,6 +73,8 @@ export const GET: APIRoute = async (context) => {
     status: job.status,
   })
   return json({
+    error_code: job.error_code ?? null,
+    error_message: job.error_message ?? null,
     id: job.id,
     provider_job_id: job.provider_job_id ?? null,
     request_id,
