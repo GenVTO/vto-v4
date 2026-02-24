@@ -3,6 +3,7 @@ import { GlassMagnifier } from 'react-image-magnifiers'
 
 import type { TryOnHistoryItem } from './types'
 
+import { ImageComparisonDialog } from './ImageComparisonDialog'
 import { getOriginalImageUrl, getProductImageUrl } from './utils'
 
 interface HistoryImagesProps {
@@ -15,7 +16,14 @@ export function HistoryImages({ item }: HistoryImagesProps) {
 
   return (
     <div className="space-y-4">
-      <h4 className="text-sm font-semibold text-slate-900">Images</h4>
+      <div className="flex items-center justify-between">
+        <h4 className="text-sm font-semibold text-slate-900">Images</h4>
+        <ImageComparisonDialog
+          originalImage={originalImage}
+          productImage={productImage}
+          resultImage={item.result_url || undefined}
+        />
+      </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {originalImage && (
           <div className="space-y-2">

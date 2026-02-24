@@ -42,7 +42,7 @@ export function HistoryRow({ item }: HistoryRowProps) {
       {isExpanded && (
         <TableRow className="bg-slate-50/50 hover:bg-slate-50/50">
           <TableCell colSpan={8} className="p-4 sm:p-6">
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div className="flex flex-col gap-8">
               <HistoryImages item={item} />
               <HistoryTimeline events={item.events} />
             </div>
