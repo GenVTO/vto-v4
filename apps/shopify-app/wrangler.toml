@@ -1,0 +1,12 @@
+name = "vto-shopify-app"
+main = "build/server/index.js"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[[kv_namespaces]]
+binding = "SESSION_KV"
+id = "3b5c7caa18734483acb43edea40a415c"
+preview_id = "f97e54682cee409b8ff19a4a24dca90f"
+
+[vars]
+SHOPIFY_APP_URL = ""

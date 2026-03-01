@@ -8,6 +8,7 @@ ignoredBuiltDependencies:
   - sharp
 
 onlyBuiltDependencies:
+  - '@parcel/watcher'
   - '@sentry/cli'
   - esbuild
   - supabase

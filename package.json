@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "pnpm --filter @vto/web dev",
+    "dev:shopify": "pnpm --filter @vto/shopify-app dev",
     "build": "pnpm --filter @vto/web build",
     "check": "pnpm -r type-check && pnpm -r test",
     "type-check": "pnpm -r type-check",

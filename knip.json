@@ -2,8 +2,11 @@
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "ignore": ["oxlint.config.ts"],
   "workspaces": {
-    "apps/*": {
+    "apps/web": {
       "project": ["src/**/*.{ts,tsx,astro}"]
+    },
+    "apps/shopify-app": {
+      "project": ["app/**/*.{ts,tsx}", "extensions/**/*.{ts,tsx}"]
     },
     "libs/*": {
       "project": ["src/**/*.{ts,tsx}"]
