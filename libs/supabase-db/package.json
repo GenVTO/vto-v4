@@ -17,11 +17,11 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@supabase/supabase-js": "2.97.0",
+    "@supabase/supabase-js": "2.98.0",
     "@vto/logger": "workspace:*",
     "@vto/types": "workspace:*"
   },
   "devDependencies": {
-    "supabase": "2.76.14"
+    "supabase": "2.76.15"
   }
 }

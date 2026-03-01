@@ -11,8 +11,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "3.996.0",
-    "@aws-sdk/s3-request-presigner": "3.996.0",
+    "@aws-sdk/client-s3": "3.1000.0",
+    "@aws-sdk/s3-request-presigner": "3.1000.0",
     "@vto/env": "workspace:*",
     "@vto/logger": "workspace:*",
     "@vto/types": "workspace:*"
